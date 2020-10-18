@@ -51,26 +51,9 @@ body {
 
 			.header {
 				img {
-					width: 50%;
+					width: 85%;
 				}
 			}
-
-			.inputs-box-row {
-                display: flex; flex-direction: row;
-                margin-bottom: 1em; margin-top: 1.5em;
-
-                > div {
-                    display: flex; flex-direction: row;
-                    align-items: center;
-
-                    svg {
-                        margin-left: 2em;
-                        color: $paragraph;
-                        width: 0.75em; height: 0.75em;
-                        padding: 2px;
-                    }
-                }
-            }
 
             .main {
 				display: flex; flex-direction: column;
@@ -78,6 +61,8 @@ body {
 				max-width: 340px;
 
 				.timer {
+					padding-bottom: 4em;
+
 					.time {
 						text-align: center;
 						font-size: 700%;

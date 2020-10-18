@@ -2,8 +2,6 @@
 // dev
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 // app
 import logo from "./logo.png";
@@ -15,14 +13,12 @@ import logo from "./logo.png";
 const activityDurationSeconds = 60 * 2.5;
 
 export default function App () {
-	const [ selectedOptions, setSelectedOptions ] = useState({ stretching: true, rolling: true });
-
 	const [ savedData, setSavedData ] = useState( JSON.parse( localStorage.getItem( "savedData" )));
 	useEffect(() => {
 		if ( !savedData ) setSavedData({ lastCompleted: null });
 		localStorage.setItem( "savedData", JSON.stringify( savedData ));
 	}, [ savedData ]);
-	const lastCompleted = _.get( savedData, "lastCompleted" );
+	const currentKey = _.get( savedData, "currentKey" );
 	
 	const [ timer, setTimer ] = useState({ 
 		secondsRemaining: activityDurationSeconds,
@@ -42,8 +38,12 @@ export default function App () {
 	const _isRunning = Boolean( intervalRef );
 	const timeText = `${ _.floor( secondsRemaining / 60 )}:${ secondsRemaining%60 < 10 ? `0${ secondsRemaining%60 }` : secondsRemaining%60 }`;
 
-	const lastActivity = _.find( activitiesList, { key: lastCompleted });
-	const { secondLast, currentActivity, nextActivity } = getNextActivities( lastCompleted, selectedOptions );
+	const currentActivityIndex = _.findIndex( activitiesList, { key: currentKey });
+
+	const previousActivity = _.nth( activitiesList, currentActivityIndex - 1 );
+	const currentActivity = currentKey ? _.find( activitiesList, { key: currentKey }) : _.head( activitiesList );
+	const nextActivity = _.nth( _.concat( activitiesList, activitiesList ), currentActivityIndex + 1 );
+
 	useEffect(() => { 
 		if ( secondsRemaining < 0 ) {
 			// play bell
@@ -53,15 +53,13 @@ export default function App () {
 	}, [ secondsRemaining ]);
 
 	const _handleNext = () => {
-		setSavedData({ ...savedData, lastCompleted: _.get( currentActivity, "key" ) });
+		setSavedData({ ...savedData, currentKey: _.get( nextActivity, "key" ) });
 		reset();
 	};
 
 	const _handleBack = () => {
 		if ( _isRunning ) reset();
-		else if ( lastActivity ) {
-			setSavedData({ ...savedData, lastCompleted: _.get( secondLast, "key" ) });
-		}
+		else setSavedData({ ...savedData, currentKey: _.get( previousActivity, "key" ) });
 	};
 
 	return (
@@ -69,21 +67,11 @@ export default function App () {
 			<div className="header">
 				<img src={ logo } alt="Site logo, woman stretching" />	
 			</div>
-			<div className="inputs-box-row">
-				<div onClick={ () => setSelectedOptions({ ...selectedOptions, stretching: !selectedOptions.stretching }) }>
-					<label>Include stretching</label>
-					<FontAwesomeIcon icon={ selectedOptions.stretching ? faCheck : faTimes } />
-				</div>
-				<div onClick={ () => setSelectedOptions({ ...selectedOptions, rolling: !selectedOptions.rolling }) }>
-					<label>Include foam rolling</label>
-					<FontAwesomeIcon icon={ selectedOptions.rolling ? faCheck : faTimes } />
-				</div>
-			</div>
 			<div>
 				<p>A rolling queue of stretching and rolling activities with a timer and a memory of where you left off last time.</p>
 			</div>
 			<div className="current">
-				<p className="-smaller">Previous activity: { _.get( lastActivity, "label" )}</p>
+				<p className="-smaller">Previous activity: { _.get( previousActivity, "label" )}</p>
 				<h5>Current activity: { _.get( currentActivity, "label" )}</h5>
 				<p className="-smaller">Next activity: { _.get( nextActivity, "label" )}</p>
 			</div>
@@ -128,22 +116,3 @@ const bodyPartMap = [
 ];
 
 const activitiesList = _.flatten( _.map( bodyPartMap, part => activityBuilder( part )));
-
-const getNextActivities = ( lastCompleted, selectedOptions ) => {
-	const lastActivityIndex = _.findIndex( activitiesList, { key: lastCompleted });
-
-	const nextActivitiesList = _.concat( _.slice( activitiesList, lastActivityIndex + 1 ), activitiesList );
-	const filteredNextActivitiesList = _.filter( nextActivitiesList, ({ type }) => ( type === "rolling" && selectedOptions.rolling ) || ( type === "stretching" && selectedOptions.stretching ));
-
-	const prevActivitiesList = _.concat( _.reverse( _.slice( activitiesList, lastActivityIndex )), _.reverse( activitiesList ));
-	const filteredPrevActivitiesList = _.filter( prevActivitiesList, ({ type }) => ( type === "rolling" && selectedOptions.rolling ) || ( type === "stretching" && selectedOptions.stretching ));
-
-	console.log( "filteredNextActivitiesList", filteredNextActivitiesList );
-	console.log( "filteredPrevActivitiesList", filteredPrevActivitiesList );
-
-	return {
-		currentActivity: _.nth( filteredNextActivitiesList, 0 ),
-		nextActivity: _.nth( filteredNextActivitiesList, 1 ),
-		secondLast: _.nth( filteredPrevActivitiesList, 0 ),
-	};
-};
