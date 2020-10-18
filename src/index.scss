@@ -45,23 +45,26 @@ body {
 		display: flex; flex-direction: column; 
 
         .body {
-			margin: 0 8em; padding: 4em 2em 2em 2em;
+			margin: 0 8em; padding: 2em;
 			display: flex; flex-direction: column; 
 			flex-grow: 1;
 
+			.header {
+				img {
+					width: 50%;
+				}
+			}
+
 			.inputs-box-row {
-                display: flex;
-                flex-direction: row;
-                margin-bottom: 1em;
-                margin-top: 1.5em;
-                flex-wrap: wrap;
+                display: flex; flex-direction: row;
+                margin-bottom: 1em; margin-top: 1.5em;
 
                 > div {
                     display: flex; flex-direction: row;
-                    align-items: center; margin-right: 2em; 
+                    align-items: center;
 
                     svg {
-                        margin-left: 2em !important;
+                        margin-left: 2em;
                         color: $paragraph;
                         width: 0.75em; height: 0.75em;
                         padding: 2px;
@@ -71,14 +74,12 @@ body {
 
             .main {
 				display: flex; flex-direction: column;
-				justify-content: space-between; flex-grow: 1;
+				justify-content: center; flex-grow: 1;
 				max-width: 340px;
 
 				.timer {
-					text-align: center;
-					padding-bottom: 4em;
-					
 					.time {
+						text-align: center;
 						font-size: 700%;
 						color: $highlight;
 					}
@@ -106,14 +107,9 @@ body {
         margin: 0 1em !important;
         
         .inputs-box-row {
-            justify-content: left;
-
-            > div {
-                min-width: 400px;
-                padding-bottom: 0.5em;
-            }
-        }
-    }
+            justify-content: space-between;
+		}
+	}
 }
 
 @media screen and ( max-width: 600px ) {
@@ -122,16 +118,12 @@ body {
 
         .inputs-box-row {
             > div {
-                min-width: 100%;
-                justify-content: space-between;
-                padding-right: 2em;
-            }
-        }
-
-        .header {
-            h3 {
-                margin-top: 0.25em !important;
-                margin-bottom: 1.5em !important;
+				justify-content: start;
+				
+				svg {
+					margin-left: 0 !important;
+					margin-right: 3em;
+				}
             }
         }
     }
