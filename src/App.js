@@ -1,10 +1,11 @@
 
 // dev
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
 // app
 import logo from "./logo.png";
+import bell from "./single-ding-sound-effect.mp3";
 
 //
 // App
@@ -13,6 +14,8 @@ import logo from "./logo.png";
 const activityDurationSeconds = 60 * 2.5;
 
 export default function App () {
+	const $_audio = useRef();
+
 	const [ savedData, setSavedData ] = useState( JSON.parse( localStorage.getItem( "savedData" )));
 	useEffect(() => {
 		if ( !savedData ) setSavedData({ lastCompleted: null });
@@ -46,7 +49,7 @@ export default function App () {
 
 	useEffect(() => { 
 		if ( secondsRemaining < 0 ) {
-			// play bell
+			$_audio.current.play();
 			setSavedData({ ...savedData, lastCompleted: _.get( currentActivity, "key" ) });
 			reset(); 
 		}
@@ -66,13 +69,11 @@ export default function App () {
 		<div className="body">
 			<div className="header">
 				<img src={ logo } alt="Site logo, woman stretching" />	
-			</div>
-			<div>
 				<p>A rolling queue of stretching and rolling activities with a timer and a memory of where you left off last time.</p>
 			</div>
 			<div className="current">
 				<p className="-smaller">Previous activity: { _.get( previousActivity, "label" )}</p>
-				<h5>Current activity: { _.get( currentActivity, "label" )}</h5>
+				<h4>Current activity: { _.get( currentActivity, "label" )}</h4>
 				<p className="-smaller">Next activity: { _.get( nextActivity, "label" )}</p>
 			</div>
 			<div className="main">
@@ -87,6 +88,7 @@ export default function App () {
 					</div>
 				</div>
 			</div>
+			<audio ref={ $_audio } src={ bell } />
 		</div>
 	);
 }

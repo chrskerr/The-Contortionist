@@ -50,6 +50,8 @@ body {
 			flex-grow: 1;
 
 			.header {
+				margin-top: 1.5em; margin-bottom: 1.5em;
+
 				img {
 					width: 85%;
 				}
@@ -76,8 +78,9 @@ body {
 						justify-content: space-between;
 
 						button {
+							text-align: center;
 							border-radius: 8px; border: none;
-							height: 3em; width: 4em;
+							height: 3em; width: 6em;
 							background: $secondary;
 						}
 					}
