@@ -1,11 +1,13 @@
 
 // dev
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 
 // app
 import logo from "./logo.png";
-import bell from "./single-ding-sound-effect.mp3";
+const bell = new Audio( "./single-ding-sound-effect.mp3" );
+bell.load();
+
 
 //
 // App
@@ -14,8 +16,6 @@ import bell from "./single-ding-sound-effect.mp3";
 const activityDurationSeconds = 60 * 2.5;
 
 export default function App () {
-	const $_audio = useRef();
-
 	const [ savedData, setSavedData ] = useState( JSON.parse( localStorage.getItem( "savedData" )));
 	useEffect(() => {
 		if ( !savedData ) setSavedData({ lastCompleted: null });
@@ -47,14 +47,6 @@ export default function App () {
 	const currentActivity = currentKey ? _.find( activitiesList, { key: currentKey }) : _.head( activitiesList );
 	const nextActivity = _.nth( _.concat( activitiesList, activitiesList ), currentActivityIndex + 1 );
 
-	useEffect(() => { 
-		if ( secondsRemaining < 0 ) {
-			$_audio.current.play();
-			setSavedData({ ...savedData, lastCompleted: _.get( currentActivity, "key" ) });
-			reset(); 
-		}
-	}, [ secondsRemaining ]);
-
 	const _handleNext = () => {
 		setSavedData({ ...savedData, currentKey: _.get( nextActivity, "key" ) });
 		reset();
@@ -65,11 +57,18 @@ export default function App () {
 		else setSavedData({ ...savedData, currentKey: _.get( previousActivity, "key" ) });
 	};
 
+	useEffect(() => { 
+		if ( secondsRemaining <= 0 ) {
+			bell.play();
+			_handleNext();
+		}
+	}, [ secondsRemaining ]);
+
 	return (
 		<div className="body">
 			<div className="header">
 				<img src={ logo } alt="Site logo, woman stretching" />	
-				<p>A rolling queue of stretching and rolling activities with a timer and a memory of where you left off last time.</p>
+				<p>A rolling queue of { _.size( activitiesList ) } stretching and rolling activities with a timer and a memory of where you left off last time.</p>
 			</div>
 			<div className="current">
 				<p className="-smaller">Previous activity: { _.get( previousActivity, "label" )}</p>
@@ -82,13 +81,12 @@ export default function App () {
 						{ timeText }
 					</div>
 					<div className="controls">
-						<button onClick={ _isRunning ? reset : _handleBack }>Back</button>
+						<button onClick={ _isRunning ? reset : _handleBack }>{ _isRunning ? "Restart" : "Back" }</button>
 						<button onClick={ _isRunning ? pause : start }>{ _isRunning ? "Pause" : "Start" }</button>
 						<button onClick={ _handleNext }>Next</button>
 					</div>
 				</div>
 			</div>
-			<audio ref={ $_audio } src={ bell } />
 		</div>
 	);
 }
