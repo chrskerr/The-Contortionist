@@ -68,7 +68,7 @@ export default function App () {
 		<div className="body">
 			<div className="header">
 				<img src={ logo } alt="Site logo, woman stretching" />	
-				<p>A rolling queue of { _.size( activitiesList ) } stretching and rolling activities with a timer and a memory of where you left off last time.</p>
+				<p>A rolling queue of { _.size( activitiesList ) } stretching and rolling activities with a timer and a record of where you left off last time. Try to do { _.ceil( _.size( activitiesList ) / 7 ) } every day to get through every body part in a week.</p>
 			</div>
 			<div className="current">
 				<p className="-smaller">Previous activity: { _.get( previousActivity, "label" )}</p>
@@ -91,28 +91,31 @@ export default function App () {
 	);
 }
 
-const activityBuilder = ({ name, hasStretch }) => hasStretch ? ([
-	{ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
-	{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` },
-	{ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
-	{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` },
-]) : ([
-	{ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
-	{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` },
-]);
+const activityBuilder = ({ name, hasStretch, hasRolling }) => {
+	const output = [];
+
+	if ( hasStretch ) output.push({ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
+		{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` });
+
+	if ( hasRolling ) output.push({ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
+		{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` });
+
+	return output;
+};
 
 const bodyPartMap = [
-	{ name: "hamstring", hasStretch: true },
-	{ name: "glute", hasStretch: true },
-	{ name: "lat", hasStretch: true },
-	{ name: "pec", hasStretch: true },
-	{ name: "quad", hasStretch: true },
-	{ name: "hip-flexor", hasStretch: true },
-	{ name: "forearm", hasStretch: true },
-	{ name: "tricep", hasStretch: true },
-	{ name: "groin", hasStretch: true },
-	{ name: "calf", hasStretch: true },
-	{ name: "trap", hasStretch: false },
+	{ name: "hamstring", hasStretch: true, hasRolling: true },
+	{ name: "glute", hasStretch: true, hasRolling: true },
+	{ name: "lat", hasStretch: true, hasRolling: true },
+	{ name: "pec", hasStretch: true, hasRolling: true },
+	{ name: "quad", hasStretch: true, hasRolling: true },
+	{ name: "hip-flexor", hasStretch: true, hasRolling: true },
+	{ name: "forearm", hasStretch: true, hasRolling: true },
+	{ name: "tricep", hasStretch: true, hasRolling: true },
+	{ name: "front-shoulder", hasStretch: true, hasRolling: false },
+	{ name: "groin", hasStretch: true, hasRolling: true },
+	{ name: "calf", hasStretch: true, hasRolling: true },
+	{ name: "trap", hasStretch: false, hasRolling: true },
 ];
 
 const activitiesList = _.flatten( _.map( bodyPartMap, part => activityBuilder( part )));
