@@ -5,9 +5,8 @@ import _ from "lodash";
 
 // app
 import logo from "./logo.png";
-const bell = new Audio( "./single-ding-sound-effect.mp3" );
-bell.load();
-
+import audioFile from "./single-ding-sound-effect.mp3";
+const audio = new Audio( audioFile );
 
 //
 // App
@@ -52,6 +51,12 @@ export default function App () {
 		reset();
 	};
 
+	const _handleStart = () => {
+		start();
+		audio.play();
+		audio.pause();
+	};
+
 	const _handleBack = () => {
 		if ( _isRunning ) reset();
 		else setSavedData({ ...savedData, currentKey: _.get( previousActivity, "key" ) });
@@ -59,7 +64,7 @@ export default function App () {
 
 	useEffect(() => { 
 		if ( secondsRemaining <= 0 ) {
-			bell.play();
+			audio.play();
 			_handleNext();
 		}
 	}, [ secondsRemaining ]);
@@ -82,7 +87,7 @@ export default function App () {
 					</div>
 					<div className="controls">
 						<button onClick={ _isRunning ? reset : _handleBack }>{ _isRunning ? "Restart" : "Back" }</button>
-						<button onClick={ _isRunning ? pause : start }>{ _isRunning ? "Pause" : "Start" }</button>
+						<button onClick={ _isRunning ? pause : _handleStart }>{ _isRunning ? "Pause" : "Start" }</button>
 						<button onClick={ _handleNext }>Next</button>
 					</div>
 				</div>
@@ -94,11 +99,11 @@ export default function App () {
 const activityBuilder = ({ name, hasStretch, hasRolling }) => {
 	const output = [];
 
-	if ( hasStretch ) output.push({ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
-		{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` });
-
 	if ( hasRolling ) output.push({ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
 		{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` });
+
+	if ( hasStretch ) output.push({ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
+		{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` });
 
 	return output;
 };
