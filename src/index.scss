@@ -72,7 +72,7 @@ body {
 					}
 
 					.controls {
-						width: 75%; margin: 0 auto;
+						width: 100%; margin: 0 auto;
 						margin-top: 2em;
 						display: flex; flex-direction: row;
 						justify-content: space-between;
@@ -80,7 +80,7 @@ body {
 						button {
 							text-align: center;
 							border-radius: 8px; border: none;
-							height: 3em; width: 6em;
+							height: 4em; width: 8em;
 							background: $secondary;
 						}
 					}

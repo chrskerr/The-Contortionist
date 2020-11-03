@@ -96,31 +96,44 @@ export default function App () {
 	);
 }
 
-const activityBuilder = ({ name, hasStretch, hasRolling }) => {
+const activityBuilder = ({ name, hasStretch = true, hasRolling = true, unilateral = true }) => {
 	const output = [];
 
-	if ( hasRolling ) output.push({ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
-		{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` });
+	if ( unilateral ) {	
+		if ( hasRolling ) output.push(
+			{ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
+			{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` },
+		);
 
-	if ( hasStretch ) output.push({ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
-		{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` });
+		if ( hasStretch ) output.push(
+			{ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
+			{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` },
+		);
+	}
+	else {
+		if ( hasRolling ) output.push({ key: `${ name }`, type: "rolling", label: `${ _.startCase( name ) }` });
+		if ( hasStretch ) output.push({ key: `${ name }`, type: "stretching", label: `${ _.startCase( name ) }` });
+	}
 
 	return output;
 };
 
 const bodyPartMap = [
-	{ name: "hamstring", hasStretch: true, hasRolling: true },
-	{ name: "glute", hasStretch: true, hasRolling: true },
-	{ name: "lat", hasStretch: true, hasRolling: true },
-	{ name: "pec", hasStretch: true, hasRolling: true },
-	{ name: "quad", hasStretch: true, hasRolling: true },
-	{ name: "hip-flexor", hasStretch: true, hasRolling: true },
-	{ name: "forearm", hasStretch: true, hasRolling: true },
-	{ name: "tricep", hasStretch: true, hasRolling: true },
-	{ name: "front-shoulder", hasStretch: true, hasRolling: false },
-	{ name: "groin", hasStretch: true, hasRolling: true },
-	{ name: "calf", hasStretch: true, hasRolling: true },
-	{ name: "trap", hasStretch: false, hasRolling: true },
+	{ name: "standing-pike-stretch", unilateral: false, hasRolling: false },
+	{ name: "glute" },
+	{ name: "lat" },
+	{ name: "pec" },
+	{ name: "quad" },
+	{ name: "standing-pike-stretch", unilateral: false, hasRolling: false },
+	{ name: "frog-stretch", unilateral: false, hasRolling: false },
+	{ name: "hip-flexor" },
+	{ name: "forearm" },
+	{ name: "tricep" },
+	{ name: "standing-pike-stretch", unilateral: false, hasRolling: false },
+	{ name: "front-shoulder", hasRolling: false },
+	{ name: "groin" },
+	{ name: "calf" },
+	{ name: "trap", hasStretch: false },
 ];
 
 const activitiesList = _.flatten( _.map( bodyPartMap, part => activityBuilder( part )));
