@@ -42,9 +42,12 @@ export default function App () {
 
 	const currentActivityIndex = _.findIndex( activitiesList, { key: currentKey });
 
-	const previousActivity = _.nth( activitiesList, currentActivityIndex - 1 );
+	const _isFirst = currentActivityIndex === 0;
+	const _isLast = currentActivityIndex === _.size( activitiesList ) - 1;
+
+	const previousActivity = _isFirst ? _.last( activitiesList ) : _.nth( activitiesList, currentActivityIndex - 1 );
 	const currentActivity = currentKey ? _.find( activitiesList, { key: currentKey }) : _.head( activitiesList );
-	const nextActivity = _.nth( _.concat( activitiesList, activitiesList ), currentActivityIndex + 1 );
+	const nextActivity = _isLast ? _.head( activitiesList ) : _.nth( activitiesList, currentActivityIndex + 1 );
 
 	const _handleNext = () => {
 		setSavedData({ ...savedData, currentKey: _.get( nextActivity, "key" ) });
@@ -96,23 +99,23 @@ export default function App () {
 	);
 }
 
-const activityBuilder = ({ name, hasStretch = true, hasRolling = true, unilateral = true }) => {
+const activityBuilder = ({ name, hasStretch = true, hasRolling = true, unilateral = true }, i ) => {
 	const output = [];
 
 	if ( unilateral ) {	
 		if ( hasRolling ) output.push(
-			{ key: `${ name }-roll-right`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
-			{ key: `${ name }-roll-left`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` },
+			{ key: `${ name }-roll-right-${ i }`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
+			{ key: `${ name }-roll-left-${ i }`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` },
 		);
 
 		if ( hasStretch ) output.push(
-			{ key: `${ name }-stretch-right`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
-			{ key: `${ name }-stretch-left`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` },
+			{ key: `${ name }-stretch-right-${ i }`, type: "stretching", label: `Stretch Right ${ _.startCase( name ) }` },
+			{ key: `${ name }-stretch-left-${ i }`, type: "stretching", label: `Stretch Left ${ _.startCase( name ) }` },
 		);
 	}
 	else {
-		if ( hasRolling ) output.push({ key: `${ name }`, type: "rolling", label: `${ _.startCase( name ) }` });
-		if ( hasStretch ) output.push({ key: `${ name }`, type: "stretching", label: `${ _.startCase( name ) }` });
+		if ( hasRolling ) output.push({ key: `${ name }-${ i }`, type: "rolling", label: `${ _.startCase( name ) }` });
+		if ( hasStretch ) output.push({ key: `${ name }-${ i }`, type: "stretching", label: `${ _.startCase( name ) }` });
 	}
 
 	return output;
@@ -130,7 +133,8 @@ const bodyPartMap = [
 	{ name: "hip-flexor" },
 	{ name: "forearm" },
 	{ name: "tricep" },
-	{ name: "standing-pike-stretch", unilateral: false, hasRolling: false },
+	{ name: "half-lotus-right", unilateral: false, hasRolling: false },
+	{ name: "half-lotus-left", unilateral: false, hasRolling: false },
 	{ name: "front-shoulder", hasRolling: false },
 	{ name: "groin", hasStretch: false },
 	{ name: "frog-stretch", unilateral: false, hasRolling: false },
@@ -138,4 +142,4 @@ const bodyPartMap = [
 	{ name: "trap", hasStretch: false },
 ];
 
-const activitiesList = _.flatten( _.map( bodyPartMap, part => activityBuilder( part )));
+const activitiesList = _.flatten( _.map( bodyPartMap, ( part, i ) => activityBuilder( part, i )));
