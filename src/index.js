@@ -5,7 +5,7 @@ import { hydrate, render } from "react-dom";
 
 // app
 import "./index.scss";
-import App from "./App";
+import App from "./app";
 
 //
 // Index 

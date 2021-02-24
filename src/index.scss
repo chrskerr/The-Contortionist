@@ -1,4 +1,6 @@
 
+@import './icomoon-fa-v1.0/style.css';
+
 $background: #fffffe;
 $stroke: #272343;
 $highlight: #ffd803;
@@ -6,48 +8,57 @@ $secondary: #e3f6f5;
 $tertiary: #bae8e8;
 $heading: #272343;
 $paragraph: #2d334a;
-$button: $highlight;
-$button-text: $heading;
+
+$background-dark: #232946;
+$stroke-dark: #121629;
+$highlight-dark: #eebbc3;
+$secondary-dark: #fffffe;
+$tertiary-dark: #eebbc3;
+$heading-dark: #fffffe;
+$paragraph-dark: #b8c1ec;
 
 
 body {
     margin: 0; padding: 0;
     box-sizing: border-box;
     font-family: 'Noto Sans HK', sans-serif;
-
-    h1, h2, h3, h4, h5, h6 {
-        color: $heading !important;
-        margin-bottom: 1em;
-        margin-top: 0;
-    }
-    
-    p, label, span {
-		color: $paragraph !important;
-		font-size: 14px;
-
-		&.-smaller { 
-			font-size: 80%;
-		}
-    }
-    
-    a {
-        color: $secondary !important;
-    }
-
-    .-colour-tertiary {
-        color: $tertiary !important;
-    }
+	width: 100vw; max-width: 100vw;
+	height: 100vh; max-height: 100vh;
 
     #root {
-        width: 100vw; min-height: 100vh;
-        background-color: $background;
+        width: 100vw; height: 100%; 
 		margin: 0; padding: 0;
 		display: flex; flex-direction: column; 
 
         .body {
-			margin: 0 8em; padding: 2em;
+			padding: 2em 10em;
 			display: flex; flex-direction: column; 
+			align-items: center;
 			flex-grow: 1;
+			background-color: $background;
+
+			h1, h2, h3, h4, h5, h6 {
+				color: $heading !important;
+				margin-bottom: 1em;
+				margin-top: 0;
+			}
+			
+			p, label, span {
+				color: $paragraph !important;
+				font-size: 14px;
+		
+				&.-smaller { 
+					font-size: 80%;
+				}
+			}
+			
+			a {
+				color: $secondary !important;
+			}
+		
+			.-colour-tertiary {
+				color: $tertiary !important;
+			}
 
 			.header {
 				margin-top: 1.5em; margin-bottom: 1em;
@@ -60,10 +71,10 @@ body {
             .main {
 				display: flex; flex-direction: column;
 				justify-content: center; flex-grow: 1;
-				max-width: 340px;
+				width: 100%; max-width: 300px;
 
 				.timer {
-					padding-bottom: 4em;
+					// padding-bottom: 4em;
 
 					.time {
 						text-align: center;
@@ -86,13 +97,80 @@ body {
 					}
 				}
             }
+
+			.dark-mode-toggle {
+				position: absolute;
+				top: 1rem; right: 1rem;
+
+				button {
+					width: 1.5rem; height: 1.5rem;
+					background-color: $background-dark;
+					padding: 0; border: none;
+					cursor: pointer; border-radius: 4px;
+
+					span::before {
+						color: $paragraph-dark;
+					}
+				}
+			}
+
+
+			&.-dark-mode {		
+				h1, h2, h3, h4, h5, h6 {
+					color: $heading-dark !important;
+				}
+				
+				p, label, span {
+					color: $paragraph-dark !important;
+				}
+				
+				a {
+					color: $secondary-dark !important;
+				}
+		
+				.-colour-tertiary {
+					color: $tertiary-dark !important;
+				}
+		
+				background-color: $background-dark;
+		
+				.header {
+					img {
+						filter: invert( 1 );
+					}
+				}
+
+				.main {
+					.timer {	
+						.time {
+							color: $highlight-dark;
+						}
+		
+						.controls {	
+							button {
+								background: $secondary-dark;
+							}
+						}
+					}
+				}
+		
+				.dark-mode-toggle {
+					button {
+						background-color: $background;
+
+						span::before {
+							color: $paragraph;
+						}
+					}
+				}
+			}
         }
     }
 }
 
 @media screen and ( max-width: 1100px ) {
     .body {
-        margin: 0 1em !important;
+        padding: 0 1em !important;
         
         .inputs-box-row {
             justify-content: space-between;
@@ -102,8 +180,6 @@ body {
 
 @media screen and ( max-width: 600px ) {
     .body {
-        margin: 0 !important;
-
         .inputs-box-row {
             > div {
 				justify-content: start;

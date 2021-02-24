@@ -2,6 +2,8 @@
 // dev
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
+import localforage from "localforage";
+import useMedia from "./use-media";
 
 // app
 import logo from "./logo.png";
@@ -15,12 +17,28 @@ const audio = new Audio( audioFile );
 const activityDurationSeconds = 60 * 2.5;
 
 export default function App () {
-	const [ savedData, setSavedData ] = useState( JSON.parse( localStorage.getItem( "savedData" )));
+	const [ currentKey, setCurrentKey ] = useState();
+	const [ darkMode, setDarkMode ] = useState( useMedia([ "(prefers-color-scheme: dark)" ], [ true ], false ));
+
 	useEffect(() => {
-		if ( !savedData ) setSavedData({ lastCompleted: null });
-		localStorage.setItem( "savedData", JSON.stringify( savedData ));
-	}, [ savedData ]);
-	const currentKey = _.get( savedData, "currentKey" );
+		( async () => setCurrentKey( await localforage.getItem( "currentKey" )))();
+	}, []);
+
+	useEffect(() => {
+		localforage.setItem( "currentKey", currentKey );
+	}, [ currentKey ]);
+
+	const _setViewHeight = _.debounce(() => {
+		const newViewHeight = _.get( window, "innerHeight" );
+		const el = document.getElementById( "root" );
+		el.setAttribute( "style", `height: ${ newViewHeight }; max-height: ${ newViewHeight };` );
+	}, 100 );
+
+	useEffect(() => {
+		_setViewHeight();
+		window.addEventListener( "resize", _setViewHeight );
+		return () => window.removeEventListener( "resize" );
+	}, []);
 	
 	const [ timer, setTimer ] = useState({ 
 		secondsRemaining: activityDurationSeconds,
@@ -40,7 +58,8 @@ export default function App () {
 	const _isRunning = Boolean( intervalRef );
 	const timeText = `${ _.floor( secondsRemaining / 60 )}:${ secondsRemaining%60 < 10 ? `0${ secondsRemaining%60 }` : secondsRemaining%60 }`;
 
-	const currentActivityIndex = _.findIndex( activitiesList, { key: currentKey });
+	const activitiesList = activitiesListGenerator({ includeRolling: false });
+	const currentActivityIndex = _.findIndex( activitiesList, { key: currentKey }) || 0;
 
 	const _isFirst = currentActivityIndex === 0;
 	const _isLast = currentActivityIndex === _.size( activitiesList ) - 1;
@@ -50,7 +69,7 @@ export default function App () {
 	const nextActivity = _isLast ? _.head( activitiesList ) : _.nth( activitiesList, currentActivityIndex + 1 );
 
 	const _handleNext = () => {
-		setSavedData({ ...savedData, currentKey: _.get( nextActivity, "key" ) });
+		setCurrentKey( _.get( nextActivity, "key" ));
 		reset();
 	};
 
@@ -62,7 +81,7 @@ export default function App () {
 
 	const _handleBack = () => {
 		if ( _isRunning ) reset();
-		else setSavedData({ ...savedData, currentKey: _.get( previousActivity, "key" ) });
+		else setCurrentKey( _.get( previousActivity, "key" ));
 	};
 
 	useEffect(() => { 
@@ -72,14 +91,15 @@ export default function App () {
 		}
 	}, [ secondsRemaining ]);
 
+	if ( _.isUndefined( currentKey )) return null;
+
 	return (
-		<div className="body">
+		<div className={ darkMode ? "body -dark-mode" : "body" } id="body">
 			<div className="header">
 				<img src={ logo } alt="Site logo, woman stretching" />	
-				<p>A rolling queue of { _.size( activitiesList ) } stretching and rolling activities with a timer and a record of where you left off last time. Try to do { _.ceil( _.size( activitiesList ) / 7 ) } every day to get through every body part in a week.</p>
+				<p>A rolling queue of { _.size( activitiesList ) } stretching activities with a timer and a record of where you left off last time. Try to do { _.ceil( _.size( activitiesList ) / 7 ) } every day to get through every body part in a week.</p>
 			</div>
 			<div className="current">
-				<p className="-smaller">Previous activity: { _.get( previousActivity, "label" )}</p>
 				<h4>Current activity: { _.get( currentActivity, "label" )}</h4>
 				<p className="-smaller">Next activity: { _.get( nextActivity, "label" )}</p>
 			</div>
@@ -95,15 +115,20 @@ export default function App () {
 					</div>
 				</div>
 			</div>
+			<div className="dark-mode-toggle">
+				<button onClick={ () => setDarkMode( d => !d ) }>
+					<span className={ darkMode ? "fa-sun" : "fa-moon" } />
+				</button>
+			</div>
 		</div>
 	);
 }
 
-const activityBuilder = ({ name, hasStretch = true, hasRolling = true, unilateral = true }, i ) => {
+const activityBuilder = ({ name, hasStretch = true, hasRolling = true, unilateral = true }, includeRolling, i ) => {
 	const output = [];
 
 	if ( unilateral ) {	
-		if ( hasRolling ) output.push(
+		if ( hasRolling && includeRolling ) output.push(
 			{ key: `${ name }-roll-right-${ i }`, type: "rolling", label: `Foam Roll Right ${ _.startCase( name ) }` },
 			{ key: `${ name }-roll-left-${ i }`, type: "rolling", label: `Foam Roll Left ${ _.startCase( name ) }` },
 		);
@@ -114,7 +139,7 @@ const activityBuilder = ({ name, hasStretch = true, hasRolling = true, unilatera
 		);
 	}
 	else {
-		if ( hasRolling ) output.push({ key: `${ name }-${ i }`, type: "rolling", label: `${ _.startCase( name ) }` });
+		if ( hasRolling && includeRolling ) output.push({ key: `${ name }-${ i }`, type: "rolling", label: `${ _.startCase( name ) }` });
 		if ( hasStretch ) output.push({ key: `${ name }-${ i }`, type: "stretching", label: `${ _.startCase( name ) }` });
 	}
 
@@ -126,20 +151,20 @@ const bodyPartMap = [
 	{ name: "glute" },
 	{ name: "lat" },
 	{ name: "pec" },
-	{ name: "quad-couch-stretch" },
+	{ name: "quad" },
 	{ name: "hamstring", hasRolling: false },
 	{ name: "frog-stretch", unilateral: false, hasRolling: false },
 	{ name: "calf", hasRolling: false },
-	{ name: "quad-couch-stretch" },
+	{ name: "quad" },
 	{ name: "forearm" },
 	{ name: "tricep" },
 	{ name: "lotus", hasRolling: false },
 	{ name: "front-shoulder", hasRolling: false },
-	{ name: "quad-couch-stretch" },
+	{ name: "quad" },
 	{ name: "groin", hasStretch: false },
 	{ name: "frog-stretch", unilateral: false, hasRolling: false },
 	{ name: "calf" },
 	{ name: "trap", hasStretch: false },
 ];
 
-const activitiesList = _.flatten( _.map( bodyPartMap, ( part, i ) => activityBuilder( part, i )));
+const activitiesListGenerator = ({ includeRolling = false }) => _.flatten( _.map( bodyPartMap, ( part, i ) => activityBuilder( part, includeRolling, i )));
