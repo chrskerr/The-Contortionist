@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.aa4b9201.chunk.css",
-    "main.js": "/static/js/main.d507ecf5.chunk.js",
-    "main.js.map": "/static/js/main.d507ecf5.chunk.js.map",
+    "main.css": "/static/css/main.8891b0a3.chunk.css",
+    "main.js": "/static/js/main.1b729aa2.chunk.js",
+    "main.js.map": "/static/js/main.1b729aa2.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.d753ca58.js",
     "runtime-main.js.map": "/static/js/runtime-main.d753ca58.js.map",
     "static/js/2.fb0382c4.chunk.js": "/static/js/2.fb0382c4.chunk.js",
     "static/js/2.fb0382c4.chunk.js.map": "/static/js/2.fb0382c4.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.aa4b9201.chunk.css.map": "/static/css/main.aa4b9201.chunk.css.map",
+    "static/css/main.8891b0a3.chunk.css.map": "/static/css/main.8891b0a3.chunk.css.map",
     "static/js/2.fb0382c4.chunk.js.LICENSE.txt": "/static/js/2.fb0382c4.chunk.js.LICENSE.txt",
     "static/media/index.scss": "/static/media/icomoon-fa.f767d14f.ttf",
     "static/media/logo.62967c48.png": "/static/media/logo.62967c48.png",
@@ -17,7 +17,7 @@
   "entrypoints": [
     "static/js/runtime-main.d753ca58.js",
     "static/js/2.fb0382c4.chunk.js",
-    "static/css/main.aa4b9201.chunk.css",
-    "static/js/main.d507ecf5.chunk.js"
+    "static/css/main.8891b0a3.chunk.css",
+    "static/js/main.1b729aa2.chunk.js"
   ]
 }
