@@ -6,7 +6,6 @@ import { hydrate, render } from "react-dom";
 // app
 import "./index.scss";
 import App from "./App";
-import * as serviceWorker from "./serviceWorker";
 
 //
 // Index 
@@ -18,5 +17,3 @@ if ( rootElement.hasChildNodes()) {
 } else {
 	render( <App />, rootElement );
 }
-
-serviceWorker.register();
