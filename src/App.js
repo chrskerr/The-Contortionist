@@ -39,6 +39,11 @@ export default function App () {
 		window.addEventListener( "resize", _setViewHeight );
 		return () => window.removeEventListener( "resize" );
 	}, []);
+
+	useEffect(() => {
+		document.body.setAttribute( "class", darkMode ? "-dark-mode" : "" );
+		document.getElementById( "apple-mobile-web-app-status-bar-style" ).setAttribute( "content", darkMode ? "black-translucent" : "default" );
+	}, [ darkMode ]);
 	
 	const [ timer, setTimer ] = useState({ 
 		secondsRemaining: activityDurationSeconds,
@@ -65,7 +70,7 @@ export default function App () {
 	const _isLast = currentActivityIndex === _.size( activitiesList ) - 1;
 
 	const previousActivity = _isFirst ? _.last( activitiesList ) : _.nth( activitiesList, currentActivityIndex - 1 );
-	const currentActivity = currentKey ? _.find( activitiesList, { key: currentKey }) : _.head( activitiesList );
+	const currentActivity = _.nth( activitiesList, currentActivityIndex );
 	const nextActivity = _isLast ? _.head( activitiesList ) : _.nth( activitiesList, currentActivityIndex + 1 );
 
 	const _handleNext = () => {
@@ -94,7 +99,7 @@ export default function App () {
 	if ( _.isUndefined( currentKey )) return null;
 
 	return (
-		<div className={ darkMode ? "body -dark-mode" : "body" } id="body">
+		<div className="body" id="body">
 			<div className="header">
 				<img src={ logo } alt="Site logo, woman stretching" />	
 				<p>A rolling queue of { _.size( activitiesList ) } stretching activities with a timer and a record of where you left off last time. Try to do { _.ceil( _.size( activitiesList ) / 7 ) } every day to get through every body part in a week.</p>
