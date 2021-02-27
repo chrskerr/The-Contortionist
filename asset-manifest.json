@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/static/css/main.fcdc0296.chunk.css",
-    "main.js": "/static/js/main.f98a9a28.chunk.js",
-    "main.js.map": "/static/js/main.f98a9a28.chunk.js.map",
+    "main.css": "/static/css/main.92660867.chunk.css",
+    "main.js": "/static/js/main.c67505f5.chunk.js",
+    "main.js.map": "/static/js/main.c67505f5.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.d753ca58.js",
     "runtime-main.js.map": "/static/js/runtime-main.d753ca58.js.map",
-    "static/js/2.98c34406.chunk.js": "/static/js/2.98c34406.chunk.js",
-    "static/js/2.98c34406.chunk.js.map": "/static/js/2.98c34406.chunk.js.map",
+    "static/js/2.f70bf20b.chunk.js": "/static/js/2.f70bf20b.chunk.js",
+    "static/js/2.f70bf20b.chunk.js.map": "/static/js/2.f70bf20b.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.fcdc0296.chunk.css.map": "/static/css/main.fcdc0296.chunk.css.map",
-    "static/js/2.98c34406.chunk.js.LICENSE.txt": "/static/js/2.98c34406.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/static/media/icomoon-fa.6d3b1779.svg",
+    "static/css/main.92660867.chunk.css.map": "/static/css/main.92660867.chunk.css.map",
+    "static/js/2.f70bf20b.chunk.js.LICENSE.txt": "/static/js/2.f70bf20b.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/icomoon-fa.f02d4585.ttf",
     "static/media/logo.62967c48.png": "/static/media/logo.62967c48.png",
     "static/media/single-ding-sound-effect.ab26721d.mp3": "/static/media/single-ding-sound-effect.ab26721d.mp3"
   },
   "entrypoints": [
     "static/js/runtime-main.d753ca58.js",
-    "static/js/2.98c34406.chunk.js",
-    "static/css/main.fcdc0296.chunk.css",
-    "static/js/main.f98a9a28.chunk.js"
+    "static/js/2.f70bf20b.chunk.js",
+    "static/css/main.92660867.chunk.css",
+    "static/js/main.c67505f5.chunk.js"
   ]
 }
