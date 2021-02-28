@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/static/css/main.92660867.chunk.css",
-    "main.js": "/static/js/main.961628f5.chunk.js",
-    "main.js.map": "/static/js/main.961628f5.chunk.js.map",
+    "main.js": "/static/js/main.fca3284f.chunk.js",
+    "main.js.map": "/static/js/main.fca3284f.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.d753ca58.js",
     "runtime-main.js.map": "/static/js/runtime-main.d753ca58.js.map",
-    "static/js/2.8b2aa535.chunk.js": "/static/js/2.8b2aa535.chunk.js",
-    "static/js/2.8b2aa535.chunk.js.map": "/static/js/2.8b2aa535.chunk.js.map",
+    "static/js/2.8464d925.chunk.js": "/static/js/2.8464d925.chunk.js",
+    "static/js/2.8464d925.chunk.js.map": "/static/js/2.8464d925.chunk.js.map",
     "index.html": "/index.html",
     "static/css/main.92660867.chunk.css.map": "/static/css/main.92660867.chunk.css.map",
-    "static/js/2.8b2aa535.chunk.js.LICENSE.txt": "/static/js/2.8b2aa535.chunk.js.LICENSE.txt",
+    "static/js/2.8464d925.chunk.js.LICENSE.txt": "/static/js/2.8464d925.chunk.js.LICENSE.txt",
     "static/media/index.css": "/static/media/icomoon-fa.f02d4585.ttf",
     "static/media/logo.62967c48.png": "/static/media/logo.62967c48.png",
     "static/media/single-ding-sound-effect.ab26721d.mp3": "/static/media/single-ding-sound-effect.ab26721d.mp3"
   },
   "entrypoints": [
     "static/js/runtime-main.d753ca58.js",
-    "static/js/2.8b2aa535.chunk.js",
+    "static/js/2.8464d925.chunk.js",
     "static/css/main.92660867.chunk.css",
-    "static/js/main.961628f5.chunk.js"
+    "static/js/main.fca3284f.chunk.js"
   ]
 }
