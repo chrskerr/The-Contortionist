@@ -5,8 +5,8 @@ import { hydrate, render } from "react-dom";
 import { Workbox } from "workbox-window";
 
 // app
-import "./index.scss";
-import App from "./app";
+import "./css/index.css";
+import App from "./views/app";
 
 //
 // Index 

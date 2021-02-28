@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon-fa';
-  src:  url('fonts/icomoon-fa.eot?pj95b9');
-  src:  url('fonts/icomoon-fa.eot?pj95b9#iefix') format('embedded-opentype'),
-    url('fonts/icomoon-fa.ttf?pj95b9') format('truetype'),
-    url('fonts/icomoon-fa.woff?pj95b9') format('woff'),
-    url('fonts/icomoon-fa.svg?pj95b9#icomoon-fa') format('svg');
+  src:  url('fonts/icomoon-fa.eot?jzy77h');
+  src:  url('fonts/icomoon-fa.eot?jzy77h#iefix') format('embedded-opentype'),
+    url('fonts/icomoon-fa.ttf?jzy77h') format('truetype'),
+    url('fonts/icomoon-fa.woff?jzy77h') format('woff'),
+    url('fonts/icomoon-fa.svg?jzy77h#icomoon-fa') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,9 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.fa-sun:before {
+.fa-check:before {
+  content: "\e904";
+}
+.fa-x:before {
   content: "\e900";
 }
-.fa-moon:before {
+.fa-settings:before {
   content: "\e901";
+}
+.fa-moon:before {
+  content: "\e902";
+}
+.fa-sun:before {
+  content: "\e903";
 }

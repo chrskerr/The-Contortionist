@@ -1,0 +1,55 @@
+
+@import './icomoon-fa/style.css';
+@import './normalise.css';
+
+body {
+	font-family: 'Inconsolata', monospace;
+	background: var(--background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: var(--heading) !important;
+	margin-bottom: 1em;
+	margin-top: 0;
+}
+
+p, label, span {
+	color: var(--paragraph) !important;
+	font-size: 14px;
+}
+	p.-smaller, label.-smaller, span.-smaller { 
+		font-size: 80%;
+	}
+
+	h1, h2, h3, h4, h5, h6, p, label, span, button {
+		letter-spacing: 1px;
+	}
+	
+a {
+	color: var(--secondary) !important;
+}
+
+.-colour-tertiary {
+	color: var(--tertiary) !important;
+}
+
+#root {
+	position: absolute;
+	top: 0; bottom: 0;
+	left: 0; right: 0;
+	margin: 0; padding: 0;
+	display: flex; flex-direction: column; 
+	align-items: center;
+	overflow: scroll;
+}
+
+
+@media screen and ( max-width: 1100px ) {
+    .body {
+        padding: 0 1em !important;
+	}
+}
+
+@media screen and ( max-width: 600px ) {
+
+}
