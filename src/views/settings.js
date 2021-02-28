@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import Popover from "@material-ui/core/popover";
+import { Popover, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 
@@ -52,18 +52,28 @@ const useStyles = makeStyles({
 	input: {
 		display: "flex",
 		alignItems: "center",
-		marginBottom: "1rem",
+		paddingTop: "0.5rem",
+		paddingBottom: "0.5rem",
 		flexWrap: "wrap",
 		"& > *": {
-			margin: "0 0.5rem 1rem 0.5rem", padding: 0,
-			maxWidth: "50vw",
+			margin: "0 0.5rem 0 0.5rem", padding: 0,
+		},
+	},
+	stretchMapInput: {
+		display: "flex",
+		alignItems: "center",
+		paddingTop: "0.5rem",
+		paddingBottom: "0.5rem",
+		flexWrap: "wrap",
+		justifyContent: ({ isBig }) => isBig ? "space-betweem" : "flex-start",
+		"& > *": {
+			margin: "0.2rem 0.5rem", padding: 0,
 		},
 	},
 	borderBottom: {
 		borderBottom: "1px dashed lightgrey",
 	},
-	deleteButton: {
-		background: "var(--highlight)",
+	button: {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
@@ -75,23 +85,28 @@ const useStyles = makeStyles({
 		"& span": {
 			padding: 0, margin: 0,
 		},
+	},
+	deleteButton: {
+		background: "var(--highlight)",
+		width: "60px",
 	},
 	addButton: {
 		background: "var(--secondary)",
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		border: "none",
-		borderRadius: "4px",
-		padding: "0.3rem 0.4rem",
-		cursor: "pointer",
-		fontSize: "70%",
-		"& span": {
-			padding: 0, margin: 0,
-		},
+		width: "60px",
+	},
+	upDownButton: {
+		background: "white",
+		padding: 0,
+		margin: "0.25rem",
+		border: "1px inset var(--paragraph)",
+	},
+	hidden: {
+		opacity: 0,
+		cursor: "default",
 	},
 	disabledButton: {
 		opacity: 0.25,
+		cursor: "not-allowed",
 	},
 	popover: {
 		"& .MuiPaper-root": {
@@ -113,7 +128,9 @@ const useStyles = makeStyles({
 
 export default function Settings ({ state, dispatch }) {
 	const { duration, useDefaultStretches, stretchesMap, activitiesList } = state;
-	const classes = useStyles();
+
+	const isBig = useMediaQuery( "(min-width:893px)" );
+	const classes = useStyles({ isBig });
 
 	const [ subPage, setSubPage ] = useState( false );
 	const [ anchorEl, setAnchorEl ] = useState( false );
@@ -150,12 +167,10 @@ export default function Settings ({ state, dispatch }) {
 				anchorOrigin={{
 					vertical: "bottom",
 					horizontal: "center",
-					// horizontal: subPage === "queue" ? "right" : "center",
 				}}
 				transformOrigin={{
 					vertical: "top",
 					horizontal: "center",
-					// horizontal: subPage === "queue" ? "right" : "center",
 				}}
 			>
 				{ subPage === "guide" && <Guide /> }
@@ -178,9 +193,9 @@ export default function Settings ({ state, dispatch }) {
 				/>
 			</div>
 			{ !_.isEmpty( stretchesMap ) && _.map( _.concat( stretchesMap ), ( stretch, i ) => (
-				<div className={ clsx( classes.input, classes.borderBottom ) } key={ i }>
+				<div className={ clsx( classes.stretchMapInput, classes.borderBottom ) } key={ i }>
 					<InputText
-						disabled={ useDefaultStretches}
+						disabled={ useDefaultStretches }
 						label="Name"
 						value={ _.get( stretch, "name" ) }
 						onChange={ name => dispatch({ 
@@ -189,7 +204,7 @@ export default function Settings ({ state, dispatch }) {
 						})} 
 					/>
 					<InputText 
-						disabled={ useDefaultStretches}
+						disabled={ useDefaultStretches }
 						label="Frequency"
 						value={ _.get( stretch, "frequency" ) }
 						onChange={ frequency => dispatch({ 
@@ -198,7 +213,7 @@ export default function Settings ({ state, dispatch }) {
 						})} 
 					/>
 					<Toggle 
-						disabled={ useDefaultStretches}
+						disabled={ useDefaultStretches }
 						label="Both Sides"
 						checked={ _.get( stretch, "bothSides" )}
 						onChange={ () => dispatch({ 
@@ -208,17 +223,57 @@ export default function Settings ({ state, dispatch }) {
 					/>
 					<button 
 						disabled={ useDefaultStretches }
-						className={ clsx( classes.deleteButton, { [ classes.disabledButton ]: useDefaultStretches }) }
-						onClick={ () => dispatch({
-							type: "updateStretchesMap",
-							stretchesMap: _.reject( stretchesMap, ( el, j ) => i === j ),
-						})}
+						className={ clsx( classes.button, classes.deleteButton, { [ classes.disabledButton ]: useDefaultStretches }) }
+						onClick={ () => { 
+							if ( !useDefaultStretches ) { 
+								dispatch({
+									type: "updateStretchesMap",
+									stretchesMap: _.reject( stretchesMap, ( el, j ) => i === j ),
+								});
+							}
+						}}
 					>
 							Delete
 					</button>
+					<button
+						className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === 0 }) }
+						disabled={ i === 0 }
+						onClick={ () => {
+							if ( !useDefaultStretches && i !== 0 ) {
+								dispatch({
+									type: "updateStretchesMap",
+									stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
+										if ( j === i ) return acc;
+										else if ( j === i - 1 ) return _.concat( acc, stretch, el );
+										else return _.concat( acc, el );
+									},[]),
+								});
+							}
+						}}
+					>
+						<span className="fa-chevron-up" />
+					</button>
+					<button
+						className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === _.size( stretchesMap ) - 1 }) }
+						disabled={ i === _.size( stretchesMap ) - 1 }
+						onClick={ () => {
+							if ( !useDefaultStretches && i !== _.size( stretchesMap ) - 1 ) {
+								dispatch({
+									type: "updateStretchesMap",
+									stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
+										if ( j === i ) return acc;
+										else if ( j === i + 1 ) return _.concat( acc, el, stretch );
+										else return _.concat( acc, el );
+									},[]),
+								});
+							}
+						}}
+					>
+						<span className="fa-chevron-down" />
+					</button>
 				</div>
 			))}
-			<div className={ classes.input }>
+			<div className={ classes.stretchMapInput }>
 				<InputText
 					disabled={ useDefaultStretches}
 					label="Name"
@@ -238,7 +293,7 @@ export default function Settings ({ state, dispatch }) {
 					onChange={ () => setNewStretch( ns => ({ ...ns, custom: !ns.custom })) }
 				/>
 				<button 
-					className={ clsx( classes.addButton, { [ classes.disabledButton ]: !newStretch.name || !newStretch.frequency || useDefaultStretches }) }
+					className={ clsx( classes.button, classes.addButton, { [ classes.disabledButton ]: !newStretch.name || !newStretch.frequency || useDefaultStretches }) }
 					disabled={ !newStretch.name || !newStretch.frequency || useDefaultStretches }
 					onClick={ () => {
 						if ( newStretch.name && newStretch.frequency ) {
@@ -251,6 +306,20 @@ export default function Settings ({ state, dispatch }) {
 					}}
 				>
 						Add
+				</button>
+				<button
+					className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
+					disabled={ true }
+					onClick={ () => {} }
+				>
+					<span className="fa-chevron-up" />
+				</button>
+				<button
+					disabled={ true }
+					className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
+					onClick={ () => {} }
+				>
+					<span className="fa-chevron-down" />
 				</button>
 			</div>
 		</div>
@@ -324,7 +393,7 @@ const useInputTextStyles = makeStyles({
 		borderColor: "var(--tertiary)",
 		borderWidth: "1px",
 		padding: "2px",
-		width: ({ isTypeNumber }) => isTypeNumber ? "3rem" : "8rem",
+		width: ({ isTypeNumber }) => isTypeNumber ? "2rem" : "8rem",
 		"& :active, :hover, :focus": {
 			backgroundColor: "var(--secondary)",
 		},
@@ -387,7 +456,7 @@ const Guide = () => {
 const useQueueStyles = makeStyles({
 	list: {
 		columnCount: ({ count }) => _.clamp( 1, _.ceil( count / 20 ), 3 ),
-		columnGap: "1rem",
+		columnGap: "1.5rem",
 		"& li": {
 			fontSize: "75%",
 			width: "90%",
