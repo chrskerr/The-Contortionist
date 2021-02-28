@@ -202,7 +202,7 @@ export default function Settings ({ state, dispatch }) {
 						checked={ _.get( stretch, "bothSides" )}
 						onChange={ () => dispatch({ 
 							type: "updateStretchesMap", 
-							stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, custom: !_.get( stretch, "custom" ) }), 
+							stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, bothSides: !_.get( stretch, "bothSides" ) }), 
 						})}
 					/>
 					<button 
@@ -276,7 +276,7 @@ export default function Settings ({ state, dispatch }) {
 					disabled={ useDefaultStretches}
 					label="Both Sides"
 					checked={ _.get( newStretch, "bothSides" )}
-					onChange={ () => setNewStretch( ns => ({ ...ns, custom: !ns.custom })) }
+					onChange={ () => setNewStretch( ns => ({ ...ns, bothSides: !ns.bothSides })) }
 				/>
 				<button 
 					className={ clsx( classes.button, classes.addButton, { [ classes.disabledButton ]: !newStretch.name || !newStretch.frequency || useDefaultStretches }) }
@@ -293,20 +293,22 @@ export default function Settings ({ state, dispatch }) {
 				>
 						Add
 				</button>
-				<button
-					className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
-					disabled={ true }
-					onClick={ () => {} }
-				>
-					<span className="fa-chevron-up" />
-				</button>
-				<button
-					disabled={ true }
-					className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
-					onClick={ () => {} }
-				>
-					<span className="fa-chevron-down" />
-				</button>
+				<div>
+					<button
+						className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
+						disabled={ true }
+						onClick={ () => {} }
+					>
+						<span className="fa-chevron-up" />
+					</button>
+					<button
+						disabled={ true }
+						className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
+						onClick={ () => {} }
+					>
+						<span className="fa-chevron-down" />
+					</button>
+				</div>
 			</div>
 		</div>
 	);

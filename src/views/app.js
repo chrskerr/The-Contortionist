@@ -37,13 +37,18 @@ const useStyles = makeStyles({
 		position: "fixed",
 		top: "1rem",
 		zIndex: 15,
+		padding: 0, margin: 0,
 		"& button": {
-			width: "1.5rem", height: "1.5rem",
+			width: "1.8rem", height: "1.8rem",
 			backgroundColor: "var(--alt-background)",
-			padding: 0, border: "none",
+			padding: 0, margin: 0,
+			border: "none",
 			cursor: "pointer", borderRadius: "4px",
+			display: "flex",
+			justifyContent: "center", alignItems: "center",
 			"& span::before": {
 				color: "var(--alt-paragraph)",
+				fontSize: "100%",
 			},
 		},
 	},
@@ -65,7 +70,7 @@ const useStyles = makeStyles({
 		},
 	},
 	list: {
-		columnCount: ({ count }) => _.clamp( 1, _.ceil( count / 20 ), 3 ),
+		columnCount: ({ count }) => _.clamp( _.ceil( count / 20 ), 1, 3 ),
 		columnGap: "1.5rem",
 		"& li": {
 			fontSize: "75%",
@@ -85,19 +90,20 @@ export default function App () {
 		( async () => {
 			const localState = await localforage.getItem( "state" );
 			const activitiesList = activitiesListGenerator( _.get( localState, "stretchesMap" ) || stretchesMap );
+			const currentActivityIndex = _.clamp( _.findIndex( activitiesList, { key: _.get( localState, "currentKey" ) }), 0, Infinity );
 			dispatch({ 
 				type: "loadLocalStorage", 
 				state: { 
 					...localState, 
 					loaded: true,
 					activitiesList,
-					currentActivityIndex: _.findIndex( _.get( state, "activitiesList" ), { key: _.get( localState, "currentKey" ) }) || 0,
+					currentActivityIndex,
 				}});
 		})();
 	}, []);
 	
 	useEffect(() => {
-		localforage.setItem( "state", _.omit( state, [ "activitiesList", "loaded" ]));
+		localforage.setItem( "state", _.omit( state, [ "activitiesList", "loaded", "currentActivityIndex" ]));
 	}, [ state ]);
 
 	const [ darkMode, setDarkMode ] = useState( useMedia([ "(prefers-color-scheme: dark)" ], [ true ], false ));
@@ -110,7 +116,7 @@ export default function App () {
 	const { transform, opacity, width } = useSpring({
 		opacity: isSettingsOpen ? 1 : 0,
 		transform: `perspective(600px) rotateY(${ isSettingsOpen ? 180 : 0 }deg)`,
-		config: { mass: 5, tension: 500, friction: 80, delay: 50 },
+		config: { mass: 5, tension: 500, friction: 80 },
 	});
 
 	const [ anchorEl, setAnchorEl ] = useState( false );
@@ -125,8 +131,8 @@ export default function App () {
 				<a.div className={ classes.animated } style={{ zIndex: isSettingsOpen ? 1 : 10, opacity: opacity.interpolate( o => 1 - o ), transform }}>
 					<Main state={ state } dispatch={ dispatch } darkMode={ darkMode } />
 				</a.div> 
-				<a.div className={ classes.animated } style={{ zIndex: isSettingsOpen ? 10 : 1, opacity, transform: transform.interpolate( t => `${t} rotateY(180deg)` ) }}>
-					{ isSettingsOpen && <Settings state={ state } dispatch={ dispatch } /> }
+				<a.div className={ classes.animated } style={{ display: isSettingsOpen ? "" : "none", zIndex: isSettingsOpen ? 10 : 1, opacity, transform: transform.interpolate( t => `${t} rotateY(180deg)` ) }}>
+					<Settings state={ state } dispatch={ dispatch } />
 				</a.div> 
 			</div>
 			<div className={ clsx( classes.toggle, classes.queueToggle ) }>
@@ -233,7 +239,7 @@ const reducer = ( state, action ) => {
 		return {
 			...state,
 			currentKey: _.get( payload, "key" ),
-			currentActivityIndex: _.findIndex( _.get( state, "activitiesList" ), { key: _.get( payload, "key" ) }) || 0,
+			currentActivityIndex: _.clamp( _.findIndex( _.get( state, "activitiesList" ), { key: _.get( payload, "key" ) }), 0, Infinity ),
 		};
 	case "setUseDefaultStretches":
 		return {

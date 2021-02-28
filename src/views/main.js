@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 	buttonContainer: {
 		width: "min(25%, 8em)",
 		height: "3em",
-		"&  button": {
+		"& button": {
 			textAlign: "center",
 			borderRadius: "8px", border: "none",
 			height: "100%", width: "100%",
@@ -59,6 +59,11 @@ const useStyles = makeStyles({
 			overflow: "hidden",
 			padding: 0,
 			cursor: "pointer",
+			display: "flex",
+			justifyContent: "center", alignItems: "center",
+			"& span": {
+				fontSize: "120%",
+			},
 		},
 	},
 });
@@ -125,7 +130,8 @@ export default function Main ({ state, dispatch, darkMode }) {
 		<div className={ classes.root }>
 			<div className={ classes.header }>
 				<img src={ logo } alt="Site logo, woman stretching" />	
-				<p>A rolling queue of { _.size( activitiesList ) } stretches (based on my weaknesses) with a timer and a record of where you left off last time. Try to do { _.ceil( _.size( activitiesList ) / 7 ) } every day to get through them all in a week.</p>
+				<p>A rolling queue of stretches with a timer, a finish bell, and a record of where you left off last time!</p>
+				<p>You can configure the duration and queue in the settings (top right), the defaults are based on what I&apos;m bad at :)</p>
 			</div>
 			<div>
 				<h4>Current activity: { _.get( currentActivity, "label" )}</h4>
