@@ -6,6 +6,7 @@ import useMedia from "./use-media";
 import localforage from "localforage";
 import { useSpring, animated as a } from "react-spring";
 import { makeStyles } from "@material-ui/styles";
+import { Popover } from "@material-ui/core";
 
 // app
 import Main from "./main";
@@ -52,23 +53,52 @@ const useStyles = makeStyles({
 	settingsToggle: {
 		right: "calc( 1rem + 1.5rem + 1rem )",
 	},
+	queueToggle: {
+		right: "calc( 1rem + 1.5rem + 1rem + 1.5rem + 1rem )",
+	},
+	popover: {
+		"& .MuiPaper-root": {
+			marginTop: "8px",
+			padding: "1.5rem",
+			maxHeight: "70vh",
+			maxWidth: "70vw",
+		},
+	},
+	list: {
+		columnCount: ({ count }) => _.clamp( 1, _.ceil( count / 20 ), 3 ),
+		columnGap: "1.5rem",
+		"& li": {
+			fontSize: "75%",
+			width: "90%",
+		},
+		"& .current": {
+			fontWeight: 900,
+		},
+	},
 });
 
 export default function App () {
 	const [ state, dispatch ] = useReducer( reducer, initialState );
-	const { loaded, stretchesMap } = state;
+	const { loaded, stretchesMap, activitiesList, currentActivityIndex } = state;
 
 	useEffect(() => {
 		( async () => {
 			const localState = await localforage.getItem( "state" );
-			dispatch({ type: "loadLocalStorage", state: { ...localState, loaded: true }});
+			const activitiesList = activitiesListGenerator( _.get( localState, "stretchesMap" ) || stretchesMap );
+			dispatch({ 
+				type: "loadLocalStorage", 
+				state: { 
+					...localState, 
+					loaded: true,
+					activitiesList,
+					currentActivityIndex: _.findIndex( _.get( state, "activitiesList" ), { key: _.get( localState, "currentKey" ) }) || 0,
+				}});
 		})();
 	}, []);
 	
 	useEffect(() => {
-		localforage.setItem( "state", state );
+		localforage.setItem( "state", _.omit( state, [ "activitiesList", "loaded" ]));
 	}, [ state ]);
-
 
 	const [ darkMode, setDarkMode ] = useState( useMedia([ "(prefers-color-scheme: dark)" ], [ true ], false ));
 	
@@ -80,17 +110,12 @@ export default function App () {
 	const { transform, opacity, width } = useSpring({
 		opacity: isSettingsOpen ? 1 : 0,
 		transform: `perspective(600px) rotateY(${ isSettingsOpen ? 180 : 0 }deg)`,
-		config: { mass: 5, tension: 500, friction: 80 },
+		config: { mass: 5, tension: 500, friction: 80, delay: 50 },
 	});
 
-	useEffect(() => {
-		dispatch({ 
-			type: "setActivitiesList",
-			activitiesList: activitiesListGenerator( stretchesMap ),
-		});
-	}, [ stretchesMap ]);
+	const [ anchorEl, setAnchorEl ] = useState( false );
 
-	const classes = useStyles();
+	const classes = useStyles({ count: _.size( activitiesList ) });
 
 	if ( !loaded ) return null;
 	
@@ -101,8 +126,13 @@ export default function App () {
 					<Main state={ state } dispatch={ dispatch } darkMode={ darkMode } />
 				</a.div> 
 				<a.div className={ classes.animated } style={{ zIndex: isSettingsOpen ? 10 : 1, opacity, transform: transform.interpolate( t => `${t} rotateY(180deg)` ) }}>
-					<Settings state={ state } dispatch={ dispatch } />
+					{ isSettingsOpen && <Settings state={ state } dispatch={ dispatch } /> }
 				</a.div> 
+			</div>
+			<div className={ clsx( classes.toggle, classes.queueToggle ) }>
+				<button onClick={ e => setAnchorEl( e.currentTarget ) }>
+					<span className={ anchorEl ? "fa-x" : "fa-list" } />
+				</button>
 			</div>
 			<div className={ clsx( classes.toggle, classes.settingsToggle ) }>
 				<button onClick={ () => setIsSettingsOpen( d => !d ) }>
@@ -114,6 +144,28 @@ export default function App () {
 					<span className={ darkMode ? "fa-sun" : "fa-moon" } />
 				</button>
 			</div>
+
+			<Popover
+				className={ classes.popover }
+				open={ Boolean( anchorEl )}
+				anchorEl={ anchorEl }
+				onClose={ () => setAnchorEl( false ) }
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "center",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "center",
+				}}
+			>
+				<div>
+					<h5>Whole Stretching Loop</h5>
+					<ol className={ classes.list }>
+						{ !_.isEmpty( activitiesList ) && _.map( activitiesList, ({ key, label }, i ) => <li key={ key } className={ i === currentActivityIndex ? "current" : "" }>{ label }</li> )}
+					</ol>
+				</div> 
+			</Popover>
 
 			<style>{`
 				html {
@@ -149,6 +201,8 @@ const stretchesMap = [
 ];
 
 const activitiesListGenerator = stretchesMap => {
+	if ( _.isEmpty( stretchesMap )) return [];
+
 	const loops = _.max( _.map( stretchesMap, "frequency" ));
 	const extendedMap = _.reduce( _.range( 0, loops ), ( acc, loop ) => {
 		return _.concat( acc, _.filter( stretchesMap, ({ frequency }) => frequency >= loop + 1 ));
@@ -179,6 +233,7 @@ const reducer = ( state, action ) => {
 		return {
 			...state,
 			currentKey: _.get( payload, "key" ),
+			currentActivityIndex: _.findIndex( _.get( state, "activitiesList" ), { key: _.get( payload, "key" ) }) || 0,
 		};
 	case "setUseDefaultStretches":
 		return {
@@ -186,15 +241,11 @@ const reducer = ( state, action ) => {
 			useDefaultStretches: _.get( payload, "value" ),
 			stretchesMap,
 		};
-	case "setActivitiesList":
-		return {
-			...state,
-			activitiesList: _.get( payload, "activitiesList" ),
-		};
 	case "updateStretchesMap": 
 		return {
 			...state,
 			stretchesMap: _.get( payload, "stretchesMap" ),
+			activitiesList: activitiesListGenerator( _.get( payload, "stretchesMap" )),
 		};
 	case "setDuration":
 		return {
@@ -212,4 +263,6 @@ const initialState = {
 	useDefaultStretches: true,
 	stretchesMap,
 	currentKey: null,
+	currentActivityIndex: 0,
+	activitiesList: [],
 };

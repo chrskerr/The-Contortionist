@@ -65,7 +65,7 @@ const useStyles = makeStyles({
 
 export default function Main ({ state, dispatch, darkMode }) {
 	const classes = useStyles({ darkMode });
-	const { duration, currentKey, activitiesList } = state;
+	const { duration, currentKey, activitiesList, currentActivityIndex } = state;
 	
 	const [ timer, setTimer ] = useState({ 
 		secondsRemaining: duration,
@@ -84,8 +84,6 @@ export default function Main ({ state, dispatch, darkMode }) {
 	const { secondsRemaining, intervalRef, start, pause, reset } = timer;
 	const _isRunning = Boolean( intervalRef );
 	const timeText = `${ _.floor( secondsRemaining / 60 )}:${ secondsRemaining%60 < 10 ? `0${ secondsRemaining%60 }` : secondsRemaining%60 }`;
-
-	const currentActivityIndex = _.findIndex( activitiesList, { key: currentKey }) || 0;
 
 	const _isFirst = currentActivityIndex === 0;
 	const _isLast = currentActivityIndex === _.size( activitiesList ) - 1;
@@ -139,13 +137,17 @@ export default function Main ({ state, dispatch, darkMode }) {
 				</div>
 				<div className={ classes.controls }>
 					<div className={ classes.buttonContainer }>
-						<button onClick={ _isRunning ? () => reset( duration ) : _handleBack }>{ _isRunning ? "Restart" : "Back" }</button>
+						<button onClick={ _isRunning ? () => reset( duration ) : _handleBack }>
+							<span className="fa-chevrons-left"/>
+						</button>
 					</div>
 					<div className={ classes.buttonContainer }>
-						<button onClick={ _isRunning ? pause : _handleStart }>{ _isRunning ? "Pause" : "Start" }</button>
+						<button onClick={ _isRunning ? pause : _handleStart }>
+							<span className={ _isRunning ? "fa-pause" : "fa-play" } />
+						</button>
 					</div>
 					<div className={ classes.buttonContainer }>
-						<button onClick={ _handleNext }>Next</button>
+						<button onClick={ _handleNext }><span className="fa-chevrons-right" /></button>
 					</div>
 				</div>
 			</div>

@@ -33,10 +33,6 @@ const useStyles = makeStyles({
 		"& > *": {
 			minWidth: "13rem",
 		},
-		"& > div": {
-			display: "flex",
-			justifyContent: "space-between",
-		},
 		"& button": {
 			background: "var(--tertiary)",
 			display: "flex",
@@ -96,6 +92,7 @@ const useStyles = makeStyles({
 	},
 	upDownButton: {
 		background: "white",
+		display: "inline-block",
 		padding: 0,
 		margin: "0.25rem",
 		border: "1px inset var(--paragraph)",
@@ -127,43 +124,30 @@ const useStyles = makeStyles({
 });
 
 export default function Settings ({ state, dispatch }) {
-	const { duration, useDefaultStretches, stretchesMap, activitiesList } = state;
+	const { duration, useDefaultStretches, stretchesMap } = state;
 
 	const isBig = useMediaQuery( "(min-width:893px)" );
 	const classes = useStyles({ isBig });
 
-	const [ subPage, setSubPage ] = useState( false );
 	const [ anchorEl, setAnchorEl ] = useState( false );
 	const [ newStretch, setNewStretch ] = useState({ name: "", frequency: 1, bothSides: true });
-	
-	const openPopover = ( e, page ) => {
-		setSubPage( page );
-		setAnchorEl( e.currentTarget );
-	};
 
-	const closePopopver = () => {
-		setSubPage( false );
-		setAnchorEl( false );
-	};
 
 	return (
 		<div className={ classes.root }>
 			<div className={ classes.header }>
 				<h4>Settings:</h4>
 				<div>
-					<button onClick={ e => openPopover( e, "guide" ) }>
+					<button onClick={ e => setAnchorEl( e.currentTarget ) }>
 					Guide
-					</button>
-					<button onClick={ e => openPopover( e, "queue" ) }>
-					Show Queue
 					</button>
 				</div>
 			</div>
 			<Popover
 				className={ classes.popover }
-				open={ Boolean( subPage )}
+				open={ Boolean( anchorEl )}
 				anchorEl={ anchorEl }
-				onClose={ closePopopver }
+				onClose={ () => setAnchorEl( false ) }
 				anchorOrigin={{
 					vertical: "bottom",
 					horizontal: "center",
@@ -173,13 +157,13 @@ export default function Settings ({ state, dispatch }) {
 					horizontal: "center",
 				}}
 			>
-				{ subPage === "guide" && <Guide /> }
-				{ subPage === "queue" && <Queue activitiesList={ activitiesList } /> }
+				<Guide />
 			</Popover>
 			<div className={ classes.input }>
 				<h5>Duration:</h5>
 				<InputText 
 					value={ duration }
+					wide
 					onChange={ value => dispatch({ type: "setDuration", value: Number( value ) })}
 				/>
 				<p>seconds &asymp; { _.round( duration / 60, 1 ) } mins</p>
@@ -235,42 +219,44 @@ export default function Settings ({ state, dispatch }) {
 					>
 							Delete
 					</button>
-					<button
-						className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === 0 }) }
-						disabled={ i === 0 }
-						onClick={ () => {
-							if ( !useDefaultStretches && i !== 0 ) {
-								dispatch({
-									type: "updateStretchesMap",
-									stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
-										if ( j === i ) return acc;
-										else if ( j === i - 1 ) return _.concat( acc, stretch, el );
-										else return _.concat( acc, el );
-									},[]),
-								});
-							}
-						}}
-					>
-						<span className="fa-chevron-up" />
-					</button>
-					<button
-						className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === _.size( stretchesMap ) - 1 }) }
-						disabled={ i === _.size( stretchesMap ) - 1 }
-						onClick={ () => {
-							if ( !useDefaultStretches && i !== _.size( stretchesMap ) - 1 ) {
-								dispatch({
-									type: "updateStretchesMap",
-									stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
-										if ( j === i ) return acc;
-										else if ( j === i + 1 ) return _.concat( acc, el, stretch );
-										else return _.concat( acc, el );
-									},[]),
-								});
-							}
-						}}
-					>
-						<span className="fa-chevron-down" />
-					</button>
+					<div>
+						<button
+							className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === 0 }) }
+							disabled={ i === 0 }
+							onClick={ () => {
+								if ( !useDefaultStretches && i !== 0 ) {
+									dispatch({
+										type: "updateStretchesMap",
+										stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
+											if ( j === i ) return acc;
+											else if ( j === i - 1 ) return _.concat( acc, stretch, el );
+											else return _.concat( acc, el );
+										},[]),
+									});
+								}
+							}}
+						>
+							<span className="fa-chevron-up" />
+						</button>
+						<button
+							className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === _.size( stretchesMap ) - 1 }) }
+							disabled={ i === _.size( stretchesMap ) - 1 }
+							onClick={ () => {
+								if ( !useDefaultStretches && i !== _.size( stretchesMap ) - 1 ) {
+									dispatch({
+										type: "updateStretchesMap",
+										stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
+											if ( j === i ) return acc;
+											else if ( j === i + 1 ) return _.concat( acc, el, stretch );
+											else return _.concat( acc, el );
+										},[]),
+									});
+								}
+							}}
+						>
+							<span className="fa-chevron-down" />
+						</button>
+					</div>
 				</div>
 			))}
 			<div className={ classes.stretchMapInput }>
@@ -393,7 +379,9 @@ const useInputTextStyles = makeStyles({
 		borderColor: "var(--tertiary)",
 		borderWidth: "1px",
 		padding: "2px",
-		width: ({ isTypeNumber }) => isTypeNumber ? "2rem" : "8rem",
+		width: ({ isTypeNumber, wide }) => isTypeNumber ? 
+			wide ? "4rem" : "2rem" : 
+			wide ? "12rem" : "7rem",
 		"& :active, :hover, :focus": {
 			backgroundColor: "var(--secondary)",
 		},
@@ -403,9 +391,9 @@ const useInputTextStyles = makeStyles({
 	},
 });
 
-const InputText = ({ value, onChange, label, disabled }) => {
+const InputText = ({ value, onChange, label, disabled, wide }) => {
 	const isTypeNumber = typeof value === "number";
-	const classes = useInputTextStyles({ isTypeNumber, disabled });
+	const classes = useInputTextStyles({ isTypeNumber, wide, disabled });
 
 	return (
 		<span className={ classes.root }>
@@ -428,6 +416,7 @@ InputText.propTypes = {
 	]),
 	onChange: PropTypes.func,
 	disabled: PropTypes.bool,
+	wide: PropTypes.bool,
 };
 
 // Guide 
@@ -450,30 +439,4 @@ const Guide = () => {
 				<li><b>Both Sides:</b> A single entry or a single entry for each side of your body. Text will either: just be the name, or for both sided stretches, it will be &apos;Stretch Left/Right *name*&apos;.</li>
 			</ul>
 		</div> 	);
-};
-
-// Queue 
-const useQueueStyles = makeStyles({
-	list: {
-		columnCount: ({ count }) => _.clamp( 1, _.ceil( count / 20 ), 3 ),
-		columnGap: "1.5rem",
-		"& li": {
-			fontSize: "75%",
-			width: "90%",
-		},
-	},
-});
-const Queue = ({ activitiesList }) => {
-	const classes = useQueueStyles({ count: _.size( activitiesList ) });
-	return ( 
-		<div>
-			<h5>Whole Stretching Loop</h5>
-			<ol className={ classes.list }>
-				{ !_.isEmpty( activitiesList ) && _.map( activitiesList, ({ key, label }) => <li key={ key }>{ label }</li> )}
-			</ol>
-		</div> 
-	);
-};
-Queue.propTypes = {
-	activitiesList: PropTypes.array,
 };
