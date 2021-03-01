@@ -156,6 +156,7 @@ export default function Settings ({ state, dispatch }) {
 					vertical: "top",
 					horizontal: "center",
 				}}
+				BackdropProps={{ invisible: false }}
 			>
 				<Guide />
 			</Popover>
@@ -176,140 +177,133 @@ export default function Settings ({ state, dispatch }) {
 					onChange={ () => dispatch({ type: "setUseDefaultStretches", value: !useDefaultStretches }) }
 				/>
 			</div>
-			{ !_.isEmpty( stretchesMap ) && _.map( _.concat( stretchesMap ), ( stretch, i ) => (
-				<div className={ clsx( classes.stretchMapInput, classes.borderBottom ) } key={ i }>
-					<InputText
-						disabled={ useDefaultStretches }
-						label="Name"
-						value={ _.get( stretch, "name" ) }
-						onChange={ name => dispatch({ 
-							type: "updateStretchesMap", 
-							stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, name }), 
-						})} 
-					/>
-					<InputText 
-						disabled={ useDefaultStretches }
-						label="Frequency"
-						value={ _.get( stretch, "frequency" ) }
-						onChange={ frequency => dispatch({ 
-							type: "updateStretchesMap", 
-							stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, frequency: Number( frequency ) }), 
-						})} 
-					/>
-					<Toggle 
-						disabled={ useDefaultStretches }
-						label="Both Sides"
-						checked={ _.get( stretch, "bothSides" )}
-						onChange={ () => dispatch({ 
-							type: "updateStretchesMap", 
-							stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, bothSides: !_.get( stretch, "bothSides" ) }), 
-						})}
-					/>
-					<button 
-						disabled={ useDefaultStretches }
-						className={ clsx( classes.button, classes.deleteButton, { [ classes.disabledButton ]: useDefaultStretches }) }
-						onClick={ () => { 
-							if ( !useDefaultStretches ) { 
-								dispatch({
-									type: "updateStretchesMap",
-									stretchesMap: _.reject( stretchesMap, ( el, j ) => i === j ),
-								});
-							}
-						}}
-					>
+			{ !_.isEmpty( stretchesMap ) && _.map( _.concat( stretchesMap, newStretch ), ( stretch, i ) => {
+				const isFirstStretch = i === 0;
+				const isLastExistingStretch = i === _.size( stretchesMap ) - 1;
+				const isNewStretch = i === _.size( stretchesMap );
+
+				return (
+					<div className={ clsx( classes.stretchMapInput, classes.borderBottom ) } key={ i }>
+						<InputText
+							disabled={ useDefaultStretches }
+							label="Name"
+							value={ _.get( stretch, "name" ) }
+							onChange={ name => isNewStretch ?
+								setNewStretch( ns => ({ ...ns, name })) :
+								dispatch({ 
+									type: "updateStretchesMap", 
+									stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, name }), 
+								})} 
+						/>
+						<InputText 
+							disabled={ useDefaultStretches }
+							label="Frequency"
+							value={ _.get( stretch, "frequency" ) }
+							onChange={ frequency => isNewStretch ? 
+								setNewStretch( ns => ({ ...ns, frequency: Number( frequency ) })) : 
+								dispatch({ 
+									type: "updateStretchesMap", 
+									stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, frequency: Number( frequency ) }), 
+								})} 
+						/>
+						<Toggle 
+							disabled={ useDefaultStretches }
+							label="Both Sides"
+							checked={ _.get( stretch, "bothSides" )}
+							onChange={ () => isNewStretch ? 
+								setNewStretch( ns => ({ ...ns, bothSides: !ns.bothSides })) : 
+								dispatch({ 
+									type: "updateStretchesMap", 
+									stretchesMap: _.map( stretchesMap, ( el, j ) => i != j ? el : { ...el, bothSides: !_.get( stretch, "bothSides" ) }), 
+								})}
+						/>
+						{ isNewStretch ? 
+							<button 
+								className={ clsx( classes.button, classes.addButton, { [ classes.disabledButton ]: !newStretch.name || !newStretch.frequency || useDefaultStretches }) }
+								disabled={ !newStretch.name || !newStretch.frequency || useDefaultStretches }
+								onClick={ () => {
+									if ( newStretch.name && newStretch.frequency ) {
+										dispatch({
+											type: "updateStretchesMap",
+											stretchesMap: _.concat( stretchesMap, newStretch ),
+										});
+										setNewStretch({ name: "", frequency: 1, bothSides: true });
+									}
+								}}
+							>
+											Add
+							</button>
+							: 
+							<button 
+								disabled={ useDefaultStretches }
+								className={ clsx( classes.button, classes.deleteButton, { [ classes.disabledButton ]: useDefaultStretches }) }
+								onClick={ () => { 
+									if ( !useDefaultStretches ) { 
+										dispatch({
+											type: "updateStretchesMap",
+											stretchesMap: _.reject( stretchesMap, ( el, j ) => i === j ),
+										});
+									}
+								}}
+							>
 							Delete
-					</button>
-					<div>
-						<button
-							className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === 0 }) }
-							disabled={ i === 0 }
-							onClick={ () => {
-								if ( !useDefaultStretches && i !== 0 ) {
-									dispatch({
-										type: "updateStretchesMap",
-										stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
-											if ( j === i ) return acc;
-											else if ( j === i - 1 ) return _.concat( acc, stretch, el );
-											else return _.concat( acc, el );
-										},[]),
-									});
-								}
-							}}
-						>
-							<span className="fa-chevron-up" />
-						</button>
-						<button
-							className={ clsx( classes.button, classes.upDownButton, { [ classes.disabledButton ]: useDefaultStretches || i === _.size( stretchesMap ) - 1 }) }
-							disabled={ i === _.size( stretchesMap ) - 1 }
-							onClick={ () => {
-								if ( !useDefaultStretches && i !== _.size( stretchesMap ) - 1 ) {
-									dispatch({
-										type: "updateStretchesMap",
-										stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
-											if ( j === i ) return acc;
-											else if ( j === i + 1 ) return _.concat( acc, el, stretch );
-											else return _.concat( acc, el );
-										},[]),
-									});
-								}
-							}}
-						>
-							<span className="fa-chevron-down" />
-						</button>
-					</div>
-				</div>
-			))}
-			<div className={ classes.stretchMapInput }>
-				<InputText
-					disabled={ useDefaultStretches}
-					label="Name"
-					value={ _.get( newStretch, "name" ) }
-					onChange={ name => setNewStretch( ns => ({ ...ns, name })) } 
-				/>
-				<InputText 
-					disabled={ useDefaultStretches}
-					label="Frequency"
-					value={ _.get( newStretch, "frequency" ) }
-					onChange={ frequency => setNewStretch( ns => ({ ...ns, frequency: Number( frequency ) })) } 
-				/>
-				<Toggle 
-					disabled={ useDefaultStretches}
-					label="Both Sides"
-					checked={ _.get( newStretch, "bothSides" )}
-					onChange={ () => setNewStretch( ns => ({ ...ns, bothSides: !ns.bothSides })) }
-				/>
-				<button 
-					className={ clsx( classes.button, classes.addButton, { [ classes.disabledButton ]: !newStretch.name || !newStretch.frequency || useDefaultStretches }) }
-					disabled={ !newStretch.name || !newStretch.frequency || useDefaultStretches }
-					onClick={ () => {
-						if ( newStretch.name && newStretch.frequency ) {
-							dispatch({
-								type: "updateStretchesMap",
-								stretchesMap: _.concat( stretchesMap, newStretch ),
-							});
-							setNewStretch({ name: "", frequency: 1, bothSides: true });
+							</button>
 						}
-					}}
-				>
-						Add
-				</button>
-				<div>
-					<button
-						className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
-						disabled={ true }
-						onClick={ () => {} }
-					>
-						<span className="fa-chevron-up" />
-					</button>
-					<button
-						disabled={ true }
-						className={ clsx( classes.button, classes.upDownButton, classes.hidden, { [ classes.disabledButton ]: useDefaultStretches }) }
-						onClick={ () => {} }
-					>
-						<span className="fa-chevron-down" />
-					</button>
-				</div>
-			</div>
+						<div>
+							<button
+								className={ clsx( 
+									classes.button, 
+									classes.upDownButton, 
+									{ 
+										[ classes.disabledButton ]: useDefaultStretches || isFirstStretch,
+										[ classes.hidden ]: isNewStretch,
+									},
+								) }
+								disabled={ isFirstStretch }
+								onClick={ () => {
+									if ( !useDefaultStretches && !isFirstStretch && !isNewStretch ) {
+										dispatch({
+											type: "updateStretchesMap",
+											stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
+												if ( j === i ) return acc;
+												else if ( j === i - 1 ) return _.concat( acc, stretch, el );
+												else return _.concat( acc, el );
+											},[]),
+										});
+									}
+								}}
+							>
+								<span className="fa-chevron-up" />
+							</button>
+							<button
+								className={ clsx( 
+									classes.button, 
+									classes.upDownButton, 
+									{ 
+										[ classes.disabledButton ]: useDefaultStretches || isLastExistingStretch,
+										[ classes.hidden ]: isNewStretch, 
+									},
+								) }
+								disabled={ isLastExistingStretch }
+								onClick={ () => {
+									if ( !useDefaultStretches && !isLastExistingStretch && !isNewStretch ) {
+										dispatch({
+											type: "updateStretchesMap",
+											stretchesMap: _.reduce( stretchesMap, ( acc, el, j ) => {
+												if ( j === i ) return acc;
+												else if ( j === i + 1 ) return _.concat( acc, el, stretch );
+												else return _.concat( acc, el );
+											},[]),
+										});
+									}
+								}}
+							>
+								<span className="fa-chevron-down" />
+							</button>
+						</div>
+					</div>
+				);
+			})}
 		</div>
 	);
 }

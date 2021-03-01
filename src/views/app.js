@@ -7,11 +7,12 @@ import localforage from "localforage";
 import { useSpring, animated as a } from "react-spring";
 import { makeStyles } from "@material-ui/styles";
 import { Popover } from "@material-ui/core";
+import clsx from "clsx";
 
 // app
 import Main from "./main";
 import Settings from "./settings";
-import clsx from "clsx";
+import AddToHomeIos from "./add-to-home";
 
 //
 // App
@@ -164,6 +165,7 @@ export default function App () {
 					vertical: "top",
 					horizontal: "center",
 				}}
+				BackdropProps={{ invisible: false }}
 			>
 				<div>
 					<h5>Whole Stretching Loop</h5>
@@ -172,6 +174,8 @@ export default function App () {
 					</ol>
 				</div> 
 			</Popover>
+
+			<AddToHomeIos />
 
 			<style>{`
 				html {
