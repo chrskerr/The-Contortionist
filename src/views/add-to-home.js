@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 export default function AddToHomeIos () {
 	const classes = useStyles();
 
-	const [ open, setOpen ] = useState( true || ( _.includes( _.toLower( window.navigator.userAgent ), "iphone" ) && !_.get( window, "navigator.standalone" )));
+	const [ open, setOpen ] = useState( _.includes( _.toLower( window.navigator.userAgent ), "iphone" ) && !_.get( window, "navigator.standalone" ));
 
 	return (
 		<Popover
