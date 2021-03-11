@@ -138,9 +138,7 @@ export default function Settings ({ state, dispatch }) {
 			<div className={ classes.header }>
 				<h4>Settings:</h4>
 				<div>
-					<button onClick={ e => setAnchorEl( e.currentTarget ) }>
-					Guide
-					</button>
+					<button onClick={ e => setAnchorEl( e.currentTarget ) } aria-label="open guide">Guide</button>
 				</div>
 			</div>
 			<Popover
@@ -230,6 +228,7 @@ export default function Settings ({ state, dispatch }) {
 										setNewStretch({ name: "", frequency: 1, bothSides: true });
 									}
 								}}
+								aria-label="add new stretch to queue"
 							>
 											Add
 							</button>
@@ -245,6 +244,7 @@ export default function Settings ({ state, dispatch }) {
 										});
 									}
 								}}
+								aria-label="delete stretch from queue"
 							>
 							Delete
 							</button>
@@ -272,6 +272,7 @@ export default function Settings ({ state, dispatch }) {
 										});
 									}
 								}}
+								aria-label="move stretch earlier in queue"
 							>
 								<span className="fa-chevron-up" />
 							</button>
@@ -297,6 +298,7 @@ export default function Settings ({ state, dispatch }) {
 										});
 									}
 								}}
+								aria-label="move stretch later in queue"
 							>
 								<span className="fa-chevron-down" />
 							</button>

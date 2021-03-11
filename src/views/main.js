@@ -130,12 +130,12 @@ export default function Main ({ state, dispatch, darkMode }) {
 		<div className={ classes.root }>
 			<div className={ classes.header }>
 				<img src={ logo } alt="Site logo, woman stretching" />	
-				<p>A rolling queue of stretches with a timer, a finish bell, and a record of where you left off last time!</p>
+				<p>A rolling queue of stretches with a timer, a finish bell, and a record of where you left off last time.</p>
 				<p>You can configure the duration and queue in the settings (top right), the defaults are based on what I&apos;m bad at :)</p>
 			</div>
 			<div>
-				<h4>Current activity: { _.get( currentActivity, "label" )}</h4>
-				<p className="-smaller">Next activity: { _.get( nextActivity, "label" )}</p>
+				<h4>Current: { _.get( currentActivity, "label" )}</h4>
+				<p className="-smaller">Next: { _.get( nextActivity, "label" )}</p>
 			</div>
 			<div className={ classes.timer }>
 				<div className={ classes.time }>
@@ -143,17 +143,19 @@ export default function Main ({ state, dispatch, darkMode }) {
 				</div>
 				<div className={ classes.controls }>
 					<div className={ classes.buttonContainer }>
-						<button onClick={ _isRunning ? () => reset( duration ) : _handleBack }>
+						<button onClick={ _isRunning ? () => reset( duration ) : _handleBack } aria-label="back">
 							<span className="fa-chevrons-left"/>
 						</button>
 					</div>
 					<div className={ classes.buttonContainer }>
-						<button onClick={ _isRunning ? pause : _handleStart }>
+						<button onClick={ _isRunning ? pause : _handleStart } aria-label="play pause">
 							<span className={ _isRunning ? "fa-pause" : "fa-play" } />
 						</button>
 					</div>
 					<div className={ classes.buttonContainer }>
-						<button onClick={ _handleNext }><span className="fa-chevrons-right" /></button>
+						<button onClick={ _handleNext } aria-label="next">
+							<span className="fa-chevrons-right" />
+						</button>
 					</div>
 				</div>
 			</div>

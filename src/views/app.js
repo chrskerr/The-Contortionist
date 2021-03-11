@@ -137,16 +137,16 @@ export default function App () {
 				</a.div> 
 			</div>
 			<div className={ clsx( classes.toggle, classes.queueToggle ) }>
-				<button onClick={ e => setAnchorEl( e.currentTarget ) }>
+				<button onClick={ e => setAnchorEl( e.currentTarget ) } aria-label="open queue">
 					<span className={ anchorEl ? "fa-x" : "fa-list" } />
 				</button>
 			</div>
-			<div className={ clsx( classes.toggle, classes.settingsToggle ) }>
+			<div className={ clsx( classes.toggle, classes.settingsToggle ) } aria-label="toggle settings open and closed">
 				<button onClick={ () => setIsSettingsOpen( d => !d ) }>
 					<span className={ isSettingsOpen ? "fa-x" : "fa-settings" } />
 				</button>
 			</div>
-			<div className={ clsx( classes.toggle, classes.darkModeToggle ) }>
+			<div className={ clsx( classes.toggle, classes.darkModeToggle ) } aria-label="toggle night mod">
 				<button onClick={ () => setDarkMode( d => !d ) }>
 					<span className={ darkMode ? "fa-sun" : "fa-moon" } />
 				</button>
