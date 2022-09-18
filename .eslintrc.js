@@ -1,43 +1,38 @@
 module.exports = {
-	"env": {
-		"browser": true,
-		"es6": true,
-		"node": true,
+	env: {
+		browser: true,
+		es2021: true,
+		node: true,
+		jest: true,
 	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:react/recommended",
+	extends: [
+		'eslint:recommended',
+		'plugin:react/recommended',
+		'plugin:@typescript-eslint/recommended',
+		'next',
 	],
-	"globals": {
-		"Atomics": "readonly",
-		"SharedArrayBuffer": "readonly",
+	globals: {
+		Atomics: 'readonly',
+		SharedArrayBuffer: 'readonly',
 	},
-	"parserOptions": {
-		"ecmaFeatures": {
-			"jsx": true,
+	parser: '@typescript-eslint/parser',
+	parserOptions: {
+		ecmaFeatures: {
+			jsx: true,
 		},
-		"ecmaVersion": 2020,
-		"sourceType": "module",
+		ecmaVersion: 2020,
+		sourceType: 'module',
 	},
-	"plugins": [
-		"react",
-		"react-hooks",
-	],
-	"rules": {
-		"indent": [ "error", "tab" ],
-		"linebreak-style": [ "error", "unix" ],
-		"quotes": [ "error", "double" ],
-		"semi": [ "error", "always" ],
-		"array-bracket-spacing": [ "error", "always", { "objectsInArrays": false, "arraysInArrays": false }],
-		"object-curly-spacing": [ "error", "always", { "objectsInObjects": false, "arraysInObjects": false }],
-		"space-in-parens": [ "error", "always", { "exceptions": [ "{}", "()", "[]" ]}],
-		"computed-property-spacing": [ "error", "always" ],
-		"comma-dangle": [ "error", "always-multiline" ],
-		"prefer-const": "error",
-		"prefer-spread": "error",
-		"func-call-spacing": [ "error", "never" ],
-		"no-loop-func": "error",
-		"no-undef": "error",
-		"react-hooks/rules-of-hooks": "error",
+	plugins: ['react', '@typescript-eslint'],
+	rules: {
+		eqeqeq: 'error',
+		'prefer-const': 'error',
+		'prefer-spread': 'error',
+		'no-loop-func': 'error',
+		'no-undef': 'error',
+		'no-mixed-spaces-and-tabs': ['warn', 'smart-tabs'],
+		'@typescript-eslint/ban-ts-comment': 'off',
+		'@typescript-eslint/consistent-type-imports': 'error',
+		'react-hooks/exhaustive-deps': 'off',
 	},
 };
