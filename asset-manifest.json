@@ -1,23 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.021b08a5.chunk.css",
-    "main.js": "/static/js/main.1e1a728c.chunk.js",
-    "main.js.map": "/static/js/main.1e1a728c.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.d753ca58.js",
-    "runtime-main.js.map": "/static/js/runtime-main.d753ca58.js.map",
-    "static/js/2.6106496b.chunk.js": "/static/js/2.6106496b.chunk.js",
-    "static/js/2.6106496b.chunk.js.map": "/static/js/2.6106496b.chunk.js.map",
+    "main.css": "/static/css/main.6cb32253.css",
+    "main.js": "/static/js/main.cd252f30.js",
+    "static/media/single-ding-sound-effect.mp3": "/static/media/single-ding-sound-effect.ab26721d1e2926a00214.mp3",
+    "static/media/logo.png": "/static/media/logo.62967c48463055ff8c38.png",
+    "static/media/icomoon-fa.svg?3rgle0": "/static/media/icomoon-fa.3abb94ebf2e08a4defd2.svg",
+    "static/media/icomoon-fa.eot?3rgle0": "/static/media/icomoon-fa.6d9a0f86947e79c35f57.eot",
+    "static/media/icomoon-fa.woff?3rgle0": "/static/media/icomoon-fa.33021bee39574135c563.woff",
+    "static/media/icomoon-fa.ttf?3rgle0": "/static/media/icomoon-fa.155bcc42fc67c894c81c.ttf",
     "index.html": "/index.html",
-    "static/css/main.021b08a5.chunk.css.map": "/static/css/main.021b08a5.chunk.css.map",
-    "static/js/2.6106496b.chunk.js.LICENSE.txt": "/static/js/2.6106496b.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/static/media/icomoon-fa.6d9a0f86.eot",
-    "static/media/logo.62967c48.png": "/static/media/logo.62967c48.png",
-    "static/media/single-ding-sound-effect.ab26721d.mp3": "/static/media/single-ding-sound-effect.ab26721d.mp3"
+    "main.6cb32253.css.map": "/static/css/main.6cb32253.css.map",
+    "main.cd252f30.js.map": "/static/js/main.cd252f30.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.d753ca58.js",
-    "static/js/2.6106496b.chunk.js",
-    "static/css/main.021b08a5.chunk.css",
-    "static/js/main.1e1a728c.chunk.js"
+    "static/css/main.6cb32253.css",
+    "static/js/main.cd252f30.js"
   ]
 }
