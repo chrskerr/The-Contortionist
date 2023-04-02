@@ -24,5 +24,6 @@ module.exports = {
 		'no-loop-func': 'error',
 		'no-undef': 'error',
 		'react-hooks/rules-of-hooks': 'error',
+		'no-mixed-spaces-and-tabs': 'off',
 	},
 };

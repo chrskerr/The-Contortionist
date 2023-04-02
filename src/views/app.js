@@ -11,7 +11,6 @@ import clsx from 'clsx';
 // app
 import Main from './main';
 import Settings from './settings';
-import AddToHomeIos from './add-to-home';
 
 //
 // App
@@ -253,8 +252,6 @@ export default function App() {
 					</ol>
 				</div>
 			</Popover>
-
-			<AddToHomeIos />
 
 			<style>{`
 				html {
