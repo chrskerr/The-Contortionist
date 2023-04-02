@@ -23,7 +23,6 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"postbuild": "workbox generateSW workbox-config.js && react-snap",
 		"predeploy": "yarn build",
 		"deploy": "gh-pages -d build"
 	},
