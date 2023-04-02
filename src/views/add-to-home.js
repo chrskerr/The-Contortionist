@@ -1,9 +1,8 @@
-
 // dev
-import React, { useState } from "react";
-import { Popover } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import _ from "lodash";
+import React, { useState } from 'react';
+import { Popover } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+import _ from 'lodash';
 
 //
 // Add To Home
@@ -11,40 +10,48 @@ import _ from "lodash";
 
 const useStyles = makeStyles({
 	paper: {
-		width: "85vw",
-		"& p": {
-			padding: "0 1.5rem",
+		width: '85vw',
+		'& p': {
+			padding: '0 1.5rem',
 		},
 	},
 });
 
-export default function AddToHomeIos () {
+export default function AddToHomeIos() {
 	const classes = useStyles();
 
-	const [ open, setOpen ] = useState( _.includes( _.toLower( window.navigator.userAgent ), "iphone" ) && !_.get( window, "navigator.standalone" ));
+	const [open, setOpen] = useState(
+		_.includes(_.toLower(window.navigator.userAgent), 'iphone') &&
+			!_.get(window, 'navigator.standalone'),
+	);
 
 	return (
 		<Popover
-			classes={{ 
+			classes={{
 				root: classes.popover,
 				paper: classes.paper,
 			}}
-			open={ open }
+			open={open}
 			anchorReference="anchorPosition"
-			anchorPosition={{ top: window.innerHeight, left: window.innerWidth / 2 }}
-			onClose={ () => setOpen( false ) }
+			anchorPosition={{
+				top: window.innerHeight,
+				left: window.innerWidth / 2,
+			}}
+			onClose={() => setOpen(false)}
 			anchorOrigin={{
-				vertical: "bottom",
-				horizontal: "center",
+				vertical: 'bottom',
+				horizontal: 'center',
 			}}
 			transformOrigin={{
-				vertical: "bottom",
-				horizontal: "center",
+				vertical: 'bottom',
+				horizontal: 'center',
 			}}
 			BackdropProps={{ invisible: false }}
 		>
 			<p>
-				You can install this web-app onto your phone. Tap <span className="fa-ios_share" /> below, and then press &apos;Add to Home Screen&apos;.
+				You can install this web-app onto your phone. Tap{' '}
+				<span className="fa-ios_share" /> below, and then press
+				&apos;Add to Home Screen&apos;.
 			</p>
 		</Popover>
 	);

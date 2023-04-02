@@ -1,66 +1,67 @@
 @font-face {
-  font-family: 'icomoon-fa';
-  src:  url('fonts/icomoon-fa.eot?3rgle0');
-  src:  url('fonts/icomoon-fa.eot?3rgle0#iefix') format('embedded-opentype'),
-    url('fonts/icomoon-fa.ttf?3rgle0') format('truetype'),
-    url('fonts/icomoon-fa.woff?3rgle0') format('woff'),
-    url('fonts/icomoon-fa.svg?3rgle0#icomoon-fa') format('svg');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
+	font-family: 'icomoon-fa';
+	src: url('fonts/icomoon-fa.eot?3rgle0');
+	src: url('fonts/icomoon-fa.eot?3rgle0#iefix') format('embedded-opentype'),
+		url('fonts/icomoon-fa.ttf?3rgle0') format('truetype'),
+		url('fonts/icomoon-fa.woff?3rgle0') format('woff'),
+		url('fonts/icomoon-fa.svg?3rgle0#icomoon-fa') format('svg');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
 }
 
-[class^="fa-"], [class*=" fa-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon-fa' !important;
-  speak: never;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+[class^='fa-'],
+[class*=' fa-'] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'icomoon-fa' !important;
+	speak: never;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .fa-ios_share:before {
-  content: "\e90c";
+	content: '\e90c';
 }
 .fa-chevrons-right:before {
-  content: "\e907";
+	content: '\e907';
 }
 .fa-list:before {
-  content: "\e908";
+	content: '\e908';
 }
 .fa-pause:before {
-  content: "\e909";
+	content: '\e909';
 }
 .fa-play:before {
-  content: "\e90a";
+	content: '\e90a';
 }
 .fa-chevrons-left:before {
-  content: "\e90b";
+	content: '\e90b';
 }
 .fa-chevron-down:before {
-  content: "\e905";
+	content: '\e905';
 }
 .fa-chevron-up:before {
-  content: "\e906";
+	content: '\e906';
 }
 .fa-check:before {
-  content: "\e904";
+	content: '\e904';
 }
 .fa-x:before {
-  content: "\e900";
+	content: '\e900';
 }
 .fa-settings:before {
-  content: "\e901";
+	content: '\e901';
 }
 .fa-moon:before {
-  content: "\e902";
+	content: '\e902';
 }
 .fa-sun:before {
-  content: "\e903";
+	content: '\e903';
 }
