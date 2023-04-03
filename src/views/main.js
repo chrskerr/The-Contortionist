@@ -6,8 +6,6 @@ import { makeStyles } from '@material-ui/styles';
 
 // app
 import logo from '../resources/logo.png';
-import audioFile from '../resources/single-ding-sound-effect.mp3';
-const audio = new Audio(audioFile);
 
 //
 // Main
@@ -75,6 +73,11 @@ const useStyles = makeStyles({
 	},
 });
 
+/**
+ *
+ * @param {{state: import('./app.js').State, dispatch: (input: {type: string, key: string}) => void, darkMode: boolean }} param0
+ * @returns
+ */
 export default function Main({ state, dispatch, darkMode }) {
 	const classes = useStyles({ darkMode });
 	const { duration, currentKey, activitiesList, currentActivityIndex } =
@@ -82,21 +85,31 @@ export default function Main({ state, dispatch, darkMode }) {
 
 	const [timer, setTimer] = useState({
 		secondsRemaining: duration,
-		intervalRef: null,
+		/** @type {number | undefined} */
+		intervalRef: undefined,
 		start: () =>
 			setTimer(t => ({
 				...t,
-				intervalRef: setInterval(t.decrementSeconds, 1000),
+				intervalRef: window.setInterval(t.decrementSeconds, 1000),
 			})),
 		pause: () =>
 			setTimer(t => {
-				clearInterval(t.intervalRef);
-				return { ...t, intervalRef: null };
+				window.clearInterval(t.intervalRef);
+				return { ...t, intervalRef: undefined };
 			}),
+		/**
+		 *
+		 * @param {number} duration
+		 * @returns
+		 */
 		reset: duration =>
 			setTimer(t => {
-				clearInterval(t.intervalRef);
-				return { ...t, intervalRef: null, secondsRemaining: duration };
+				window.clearInterval(t.intervalRef);
+				return {
+					...t,
+					intervalRef: undefined,
+					secondsRemaining: duration,
+				};
 			}),
 		decrementSeconds: () =>
 			setTimer(t => ({ ...t, secondsRemaining: t.secondsRemaining - 1 })),
@@ -121,28 +134,29 @@ export default function Main({ state, dispatch, darkMode }) {
 		: _.nth(activitiesList, currentActivityIndex + 1);
 
 	const _handleNext = () => {
-		dispatch({ type: 'setCurrentKey', key: _.get(nextActivity, 'key') });
-		reset(duration);
+		if (nextActivity) {
+			dispatch({ type: 'setCurrentKey', key: nextActivity.key });
+			reset(duration);
+		}
 	};
 
 	const _handleStart = () => {
+		Notification.requestPermission();
 		start();
-		audio.play();
-		audio.pause();
 	};
 
 	const _handleBack = () => {
 		if (_isRunning) reset(duration);
-		else
+		else if (previousActivity)
 			dispatch({
 				type: 'setCurrentKey',
-				key: _.get(previousActivity, 'key'),
+				key: previousActivity.key,
 			});
 	};
 
 	useEffect(() => {
 		if (secondsRemaining <= 0) {
-			audio.play();
+			new Notification('Timer complete');
 			_handleNext();
 		}
 	}, [secondsRemaining]);
