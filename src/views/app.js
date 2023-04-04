@@ -279,13 +279,13 @@ const stretchData = [
 	{ name: 'Glute', frequency: 3, bothSides: true },
 	{ name: 'Hamstring', frequency: 3, bothSides: true },
 	{ name: 'Quad', frequency: 2, bothSides: true },
-	{ name: 'Half Lotus', frequency: 2, bothSides: true },
-	{ name: 'Forearm', frequency: 2, bothSides: true },
-	{ name: 'Front Shoulder', frequency: 2, bothSides: true },
+	{ name: 'Half Lotus', frequency: 1, bothSides: true },
+	{ name: 'Forearms', frequency: 1, bothSides: false },
+	{ name: 'Front Shoulders', frequency: 2, bothSides: false },
 	{ name: 'Standing Pike Stretch', bothSides: false, frequency: 1 },
 	{ name: 'Lat', frequency: 1, bothSides: true },
 	{ name: 'Pec', frequency: 1, bothSides: true },
-	{ name: 'Frog Stretch', frequency: 1, bothSides: false },
+	{ name: 'Frog Stretch', frequency: 2, bothSides: false },
 	{ name: 'Calf', frequency: 1, bothSides: true },
 ];
 
